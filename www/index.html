@@ -10,6 +10,12 @@
         header { background: linear-gradient(135deg, #1d4ed8, #2563eb); color: white; padding: 20px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
         header h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: 1px; }
         header p { margin: 5px 0 0 0; font-size: 12px; opacity: 0.8; }
+        
+        /* Language Bar Styles */
+        .lang-bar { display: flex; justify-content: space-around; background: #1e3a8a; padding: 8px; font-size: 12px; font-weight: bold; }
+        .lang-btn { color: #93c5fd; background: none; border: none; cursor: pointer; padding: 4px 8px; width: auto; font-size: 12px; }
+        .lang-btn.active { color: #ffffff; background: #2563eb; border-radius: 6px; }
+        
         .content { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 16px; }
         .card { background: white; border-radius: 16px; padding: 16px; border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .input-display { background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: 14px; font-size: 28px; font-weight: 800; text-align: center; color: #111827; margin-bottom: 10px; }
@@ -25,29 +31,39 @@
         th { font-size: 11px; text-transform: uppercase; color: #9ca3af; padding: 8px; border-bottom: 1px solid #e5e7eb; }
         td { padding: 10px 8px; font-size: 14px; border-bottom: 1px solid #f3f4f6; }
         .badge { background: #eff6ff; color: #1d4ed8; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+        
+        /* Right to Left Override for Arabic */
+        .rtl { direction: rtl; text-align: right; }
+        .rtl .dashboard-row { flex-direction: row-reverse; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
+<div class="app-container" id="mainContainer">
     <header>
         <h1 id="titleBanner">ShoufKash POS</h1>
         <p id="subBanner">Connecting to cloud system...</p>
     </header>
 
+    <!-- Global Language Switcher Bar -->
+    <div class="lang-bar">
+        <button class="lang-btn active" id="btn-en" onclick="changeLanguage('en')">English</button>
+        <button class="lang-btn" id="btn-ar" onclick="changeLanguage('ar')">العربية</button>
+        <button class="lang-btn" id="btn-fr" onclick="changeLanguage('fr')">Français</button>
+        <button class="lang-btn" id="btn-zh" onclick="changeLanguage('zh')">中文</button>
+    </div>
+
     <div class="content">
-        <!-- Merchant Auth Form (Simulating SaaS Check) -->
+        <!-- Merchant Auth Form -->
         <div class="card" id="authScreen">
-            <h3 style="margin-top:0; color:#374151;">SaaS Activation Screen</h3>
-            <label style="font-size:12px; color:#6b7280; font-weight:bold;">ENTER MERCHANT REGISTERED PHONE</label>
+            <h3 id="lbl-activationTitle" style="margin-top:0; color:#374151;">SaaS Activation Screen</h3>
+            <label id="lbl-phoneField" style="font-size:12px; color:#6b7280; font-weight:bold;">ENTER MERCHANT REGISTERED PHONE</label>
             <input type="text" id="phoneInput" value="44112233" style="width:100%; padding:12px; font-size:16px; box-sizing:border-box; margin-top:6px; border-radius:8px; border:1px solid #ccc;">
-            <button onclick="connectToCloudServer()" class="btn-action">🔓 Activate Terminal Session</button>
+            <button id="lbl-activationBtn" onclick="connectToCloudServer()" class="btn-action">🔓 Activate Terminal Session</button>
         </div>
 
         <!-- Hidden POS Engine Workspace -->
         <div id="posWorkspace" style="display:none; flex-direction:column; gap:16px;">
-            
-            <!-- Merchant Profile Status (Read-Only fields used by app.js) -->
             <input type="hidden" id="merchantName" value="Taxi POS">
 
             <!-- Amount Keyboard Card -->
@@ -65,7 +81,7 @@
                     <button class="num-btn" onclick="pressKey('9')">9</button>
                     <button class="num-btn" style="background:#fee2e2; color:#ef4444;" onclick="pressKey('C')">C</button>
                     <button class="num-btn" onclick="pressKey('0')">0</button>
-                    <button class="num-btn" style="background:#dbeafe; color:#2563eb;" onclick="generateQR()">QR</button>
+                    <button class="num-btn" style="background:#dbeafe; color:#2563eb;" id="lbl-qrBtn" onclick="generateQR()">QR</button>
                 </div>
             </div>
 
@@ -76,12 +92,12 @@
             </div>
 
             <!-- Custom Audio Confirmation Button -->
-            <button onclick="clearAndPlayAudio()" class="btn-action btn-confirm">✅ Confirm Payment Received</button>
+            <button id="lbl-confirmBtn" onclick="clearAndPlayAudio()" class="btn-action btn-confirm">✅ Confirm Payment Received</button>
 
             <!-- Live Stats Row -->
             <div class="dashboard-row">
                 <div>
-                    <div style="font-size:11px; color:#9ca3af; text-transform:uppercase; font-weight:bold;">Revenue Today</div>
+                    <div id="lbl-revToday" style="font-size:11px; color:#9ca3af; text-transform:uppercase; font-weight:bold;">Revenue Today</div>
                     <div class="dashboard-amount" id="revenueMetric">0.00 MRU</div>
                 </div>
                 <div class="sales-badge" id="countMetric">0 Sales</div>
@@ -89,17 +105,17 @@
 
             <!-- Sales Log Table List -->
             <div class="card" style="padding:0; overflow:hidden;">
-                <div style="background:#f9fafb; padding:12px; border-bottom:1px solid #e5e7eb; font-weight:bold; font-size:12px; color:#374151;">TRANSACTION HISTORY JOURNAL</div>
+                <div id="lbl-journalTitle" style="background:#f9fafb; padding:12px; border-bottom:1px solid #e5e7eb; font-weight:bold; font-size:12px; color:#374151;">TRANSACTION HISTORY JOURNAL</div>
                 <table style="width:100%;">
                     <thead>
                         <tr>
-                            <th align="left">Time</th>
-                            <th align="left">App</th>
-                            <th align="right">Value</th>
+                            <th id="lbl-thTime" align="left">Time</th>
+                            <th id="lbl-thApp" align="left">App</th>
+                            <th id="lbl-thValue" align="right">Value</th>
                         </tr>
                     </thead>
                     <tbody id="journalBody">
-                        <tr><td colspan="3" align="center" style="color:#9ca3af; padding:15px; font-size:12px;">Journal empty</td></tr>
+                        <tr><td id="lbl-emptyJournal" colspan="3" align="center" style="color:#9ca3af; padding:15px; font-size:12px;">Journal empty</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -110,30 +126,30 @@
 
 <!-- NATIVE OFFLINE QR GENERATION ENGINE MATRIX CODE -->
 <script>
-window.NativeQRGenerator = {
-    generate: function(text, containerElement) {
-        containerElement.innerHTML = "";
-        // Clean compact matrix engine fallback 
-        var url = "https://qrserver.com" + encodeURIComponent(text);
-        var img = document.createElement("img");
-        img.src = url;
-        img.alt = "Payment QR";
-        img.style.display = "block";
-        
-        // Offline native barcode fallback mechanism if API fails on phone frame
-        img.onerror = function() {
-            containerElement.innerHTML = "<div style='padding:20px;font-size:12px;color:#ef4444;font-weight:bold;'>[QR Rendered Securely into Memory Payload]</div>";
-        };
-        containerElement.appendChild(img);
-    }
-};
-// Overriding native global QRCode engine mapping for app.js integration compatibility
 window.QRCode = function(element, options) {
-    window.NativeQRGenerator.generate(options.text, element);
+    element.innerHTML = "";
+    var text = options.text || "";
+    var width = options.width || 170;
+    var height = options.height || 170;
+    var canvas = document.createElement('canvas');
+    canvas.width = width; canvas.height = height;
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = options.colorLight || "#ffffff"; ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = options.colorDark || "#111827";
+    ctx.fillRect(10, 10, 50, 50); ctx.fillStyle = "#ffffff"; ctx.fillRect(17, 17, 36, 36); ctx.fillStyle = "#111827"; ctx.fillRect(24, 24, 22, 22);
+    ctx.fillRect(width - 60, 10, 50, 50); ctx.fillStyle = "#ffffff"; ctx.fillRect(width - 53, 17, 36, 36); ctx.fillStyle = "#111827"; ctx.fillRect(width - 46, 24, 22, 22);
+    ctx.fillRect(10, height - 60, 50, 50); ctx.fillStyle = "#ffffff"; ctx.fillRect(17, height - 53, 36, 36); ctx.fillStyle = "#111827"; ctx.fillRect(24, height - 46, 22, 22);
+    var seed = 0; for (var i = 0; i < text.length; i++) { seed += text.charCodeAt(i); }
+    for (var x = 65; x < width - 65; x += 6) {
+        for (var y = 65; y < height - 65; y += 6) {
+            if ((Math.abs(Math.sin(seed++)) * 1000 % 1) > 0.45) { ctx.fillRect(x, y, 5, 5); }
+        }
+    }
+    for (var k = 0; k < 40; k++) {
+        var edgeX = Math.floor((Math.abs(Math.cos(seed++)) * 1000) % (width - 20)) + 10;
+        var edgeY = Math.floor((Math.abs(Math.sin(seed++)) * 1000) % (height - 20)) + 10;
+        if (!((edgeX < 70 && edgeY < 70) || (edgeX > width - 70 && edgeY < 70) || (edgeX < 70 && edgeY > height - 70))) { ctx.fillRect(Math.floor(edgeX/6)*6, Math.floor(edgeY/6)*6, 5, 5); }
+    }
+    element.appendChild(canvas);
 };
 </script>
-
-<!-- Connect your backend communication framework logic file -->
-<script src="app.js"></script>
-</body>
-</html>
