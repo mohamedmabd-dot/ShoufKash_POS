@@ -2,15 +2,24 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
-// Use Render's dynamic port assignment or fallback to 3000 locally
+// Render's dynamic web port binding engine rule
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+// Global Network Security Passport (CORS) - Allows your Android app to speak to Render smoothly
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    if (req.method === "OPTIONS") return res.sendStatus(200);
+    next();
+});
+
 // Serve the phone application layout assets from the www folder
 app.use(express.static(path.join(__dirname, 'www')));
 
-// Mock Database of active merchant devices (In Phase 2, this links to a database)
+// Mock Database of active merchant devices across Mauritania
 const merchantSubscriptions = {
     "44112233": { status: "ACTIVE", expiry: "2026-12-31", businessName: "Taxi Nouakchott" },
     "44556677": { status: "EXPIRED", expiry: "2026-05-01", businessName: "Epicerie Center" }
