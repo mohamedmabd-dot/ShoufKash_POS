@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+html<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,22 +7,22 @@
     <style>
         body { background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
         .app-container { max-width: 420px; margin: 0 auto; background: #ffffff; min-height: 100vh; display: flex; flex-direction: column; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        header { background: linear-gradient(135deg, #1d4ed8, #2563eb); color: white; padding: 20px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
+        header { background: linear-gradient(135deg, #1d4ed8, #2563eb); color: white; padding: 20px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; position: relative; z-index: 5; }
         header h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: 1px; }
         header p { margin: 5px 0 0 0; font-size: 12px; opacity: 0.8; }
         
-        /* Language Bar Styles */
-        .lang-bar { display: flex; justify-content: space-around; background: #1e3a8a; padding: 8px; font-size: 12px; font-weight: bold; }
-        .lang-btn { color: #93c5fd; background: none; border: none; cursor: pointer; padding: 4px 8px; width: auto; font-size: 12px; }
+        .lang-bar { display: flex; justify-content: space-around; background: #1e3a8a; padding: 8px; font-size: 12px; font-weight: bold; position: relative; z-index: 10; height: 24px; align-items: center; }
+        .lang-btn { color: #93c5fd; background: none; border: none; cursor: pointer; padding: 4px 8px; width: auto; font-size: 12px; height: 100%; display: flex; align-items: center; justify-content: center; }
         .lang-btn.active { color: #ffffff; background: #2563eb; border-radius: 6px; }
         
-        .content { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 16px; }
-        .card { background: white; border-radius: 16px; padding: 16px; border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .content { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 16px; position: relative; z-index: 20; }
+        .card { background: white; border-radius: 16px; padding: 16px; border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.02); position: relative; z-index: 30; }
+        
         .input-display { background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: 14px; font-size: 28px; font-weight: 800; text-align: center; color: #111827; margin-bottom: 10px; }
         .num-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
         .num-btn { background: #f3f4f6; border: none; padding: 16px; font-size: 20px; font-weight: 700; border-radius: 12px; cursor: pointer; color: #374151; transition: background 0.1s; }
         .num-btn:active { background: #e5e7eb; }
-        .btn-action { background: #2563eb; color: white; border: none; border-radius: 12px; padding: 14px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 10px; }
+        .btn-action { background: #2563eb; color: white; border: none; border-radius: 12px; padding: 14px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; margin-top: 10px; position: relative; z-index: 40; }
         .btn-confirm { background: #22c55e; font-size: 18px; padding: 16px; }
         .qr-wrapper { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; background: #fafafa; border-radius: 12px; border: 2px dashed #e5e7eb; padding: 10px; }
         .dashboard-row { background: #111827; color: white; padding: 16px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; }
@@ -32,7 +32,6 @@
         td { padding: 10px 8px; font-size: 14px; border-bottom: 1px solid #f3f4f6; }
         .badge { background: #eff6ff; color: #1d4ed8; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
         
-        /* Right to Left Override for Arabic */
         .rtl { direction: rtl; text-align: right; }
         .rtl .dashboard-row { flex-direction: row-reverse; }
     </style>
@@ -58,7 +57,7 @@
         <div class="card" id="authScreen">
             <h3 id="lbl-activationTitle" style="margin-top:0; color:#374151;">SaaS Activation Screen</h3>
             <label id="lbl-phoneField" style="font-size:12px; color:#6b7280; font-weight:bold;">ENTER MERCHANT REGISTERED PHONE</label>
-            <input type="text" id="phoneInput" value="44112233" style="width:100%; padding:12px; font-size:16px; box-sizing:border-box; margin-top:6px; border-radius:8px; border:1px solid #ccc;">
+            <input type="text" id="phoneInput" value="44112233" style="width:100%; padding:12px; font-size:16px; box-sizing:border-box; margin-top:6px; border-radius:8px; border:1px solid #ccc; position:relative; z-index:40;">
             <button id="lbl-activationBtn" onclick="connectToCloudServer()" class="btn-action">🔓 Activate Terminal Session</button>
         </div>
 
@@ -123,7 +122,6 @@
         </div>
     </div>
 </div>
-
 <!-- NATIVE OFFLINE QR GENERATION ENGINE MATRIX CODE -->
 <script>
 window.QRCode = function(element, options) {
@@ -132,24 +130,37 @@ window.QRCode = function(element, options) {
     var width = options.width || 170;
     var height = options.height || 170;
     var canvas = document.createElement('canvas');
-    canvas.width = width; canvas.height = height;
+    canvas.width = width; 
+    canvas.height = height;
     var ctx = canvas.getContext('2d');
-    ctx.fillStyle = options.colorLight || "#ffffff"; ctx.fillRect(0, 0, width, height);
-    ctx.fillStyle = options.colorDark || "#111827";
+    
+    ctx.fillStyle = "#ffffff"; 
+    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = "#111827";
+    
     ctx.fillRect(10, 10, 50, 50); ctx.fillStyle = "#ffffff"; ctx.fillRect(17, 17, 36, 36); ctx.fillStyle = "#111827"; ctx.fillRect(24, 24, 22, 22);
     ctx.fillRect(width - 60, 10, 50, 50); ctx.fillStyle = "#ffffff"; ctx.fillRect(width - 53, 17, 36, 36); ctx.fillStyle = "#111827"; ctx.fillRect(width - 46, 24, 22, 22);
     ctx.fillRect(10, height - 60, 50, 50); ctx.fillStyle = "#ffffff"; ctx.fillRect(17, height - 53, 36, 36); ctx.fillStyle = "#111827"; ctx.fillRect(24, height - 46, 22, 22);
-    var seed = 0; for (var i = 0; i < text.length; i++) { seed += text.charCodeAt(i); }
+    
+    var seed = 0; 
+    for (var i = 0; i < text.length; i++) { seed += text.charCodeAt(i); }
+    
     for (var x = 65; x < width - 65; x += 6) {
         for (var y = 65; y < height - 65; y += 6) {
-            if ((Math.abs(Math.sin(seed++)) * 1000 % 1) > 0.45) { ctx.fillRect(x, y, 5, 5); }
+            if (((Math.abs(Math.sin(seed++)) * 1000) % 1) > 0.45) { ctx.fillRect(x, y, 5, 5); }
         }
     }
+    
     for (var k = 0; k < 40; k++) {
         var edgeX = Math.floor((Math.abs(Math.cos(seed++)) * 1000) % (width - 20)) + 10;
         var edgeY = Math.floor((Math.abs(Math.sin(seed++)) * 1000) % (height - 20)) + 10;
-        if (!((edgeX < 70 && edgeY < 70) || (edgeX > width - 70 && edgeY < 70) || (edgeX < 70 && edgeY > height - 70))) { ctx.fillRect(Math.floor(edgeX/6)*6, Math.floor(edgeY/6)*6, 5, 5); }
+        if (!((edgeX < 70 && edgeY < 70) || (edgeX > width - 70 && edgeY < 70) || (edgeX < 70 && edgeY > height - 70))) { 
+            ctx.fillRect(Math.floor(edgeX/6)*6, Math.floor(edgeY/6)*6, 5, 5); 
+        }
     }
     element.appendChild(canvas);
 };
 </script>
+<script src="app.js"></script>
+</body>
+</html>
