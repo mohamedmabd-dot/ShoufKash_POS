@@ -1,5 +1,5 @@
-
 let currentInput = "";
+// Set your live Render dashboard web service string URL context here
 let serverUrl = "https://onrender.com"; 
 const soundFeedback = new Audio('payment_success.wav');
 let currentLang = "en";
@@ -10,32 +10,32 @@ const translations = {
         title: "ShoufKash POS", sub: "Digital POS Terminal", activationTitle: "SaaS Activation Screen",
         phoneField: "ENTER MERCHANT REGISTERED PHONE", activationBtn: "🔓 Activate Terminal Session",
         qrNotice: "Use the integrated calculator above and tap 'QR' to render payment link.",
-        confirmBtn: "✅ Confirm Payment Received", revToday: "Revenue Today", sales: "Sales", sale: "Sale",
-        journalTitle: "TRANSACTION HISTORY JOURNAL", thTime: "Time", thApp: "App", thValue: "Value",
+        confirmBtn: "✅ Confirm Payment Received", revToday: "Revenue Today", sales: "Transactions", sale: "Transactions",
+        journalTitle: "TRANSACTION HISTORY JOURNAL", thTime: "Time", thAmount: "Amount",
         emptyJournal: "Journal empty", valid: "Validating licenses...", mru: "MRU"
     },
     ar: {
         title: "شوف كاش POS", sub: "محطة الدفع الرقمية", activationTitle: "شاشة تفعيل النظام (SaaS)",
         phoneField: "أدخل رقم الهاتف المسجل للتاجر", activationBtn: "🔓 تفعيل جلسة الدفع",
         qrNotice: "استخدم الآلة الحاسبة أعلاه واضغط على 'QR' لإنشاء رمز الدفع.",
-        confirmBtn: "✅ تأكيد استلام المبلغ", revToday: "إجمالي مدخولات اليوم", sales: "عمليات", sale: "عملية",
-        journalTitle: "سجل العمليات اليومية", thTime: "الوقت", thApp: "التطبيق", thValue: "المبلغ",
+        confirmBtn: "✅ تأكيد استلام المبلغ", revToday: "إجمالي مدخولات اليوم", sales: "العمليات", sale: "العمليات",
+        journalTitle: "سجل العمليات اليومية", thTime: "الوقت", thAmount: "المبلغ",
         emptyJournal: "السجل فارغ حالياً", valid: "جاري التحقق من الاشتراك...", mru: "أوقية"
     },
     fr: {
         title: "ShoufKash POS", sub: "Terminal POS Numérique", activationTitle: "Écran d'Activation SaaS",
         phoneField: "ENTRER LE TÉLÉPHONE DU COMMERÇANT", activationBtn: "🔓 Activer la Session Terminal",
         qrNotice: "Utilisez le calculateur ci-dessus et appuyez sur 'QR' pour générer le paiement.",
-        confirmBtn: "✅ Confirmer le Paiement Reçu", revToday: "Revenu d'Aujourd'hui", sales: "Ventes", sale: "Vente",
-        journalTitle: "JOURNAL DE L'HISTORIQUE", thTime: "Heure", thApp: "App", thValue: "Valeur",
+        confirmBtn: "✅ Confirmer le Paiement Reçu", revToday: "Revenu d'Aujourd'hui", sales: "Transactions", sale: "Transactions",
+        journalTitle: "JOURNAL DE L'HISTORIQUE", thTime: "Heure", thAmount: "Montant",
         emptyJournal: "Journal vide", valid: "Validation des licences...", mru: "MRU"
     },
     zh: {
         title: "ShoufKash 智能收银", sub: "数字POS终端平台", activationTitle: "SaaS 系统激活界面",
         phoneField: "请输入商户注册的手机号码", activationBtn: "🔓 激活收银终端系统",
         qrNotice: "请使用上方数字键盘输入金额，然后点击 'QR' 生成收款码。",
-        confirmBtn: "✅ 确认已收到账款", revToday: "今日总营业额", sales: "笔交易", sale: "笔交易",
-        journalTitle: "每日交易流水历史账本", thTime: "时间", thApp: "支付应用", thValue: "金额",
+        confirmBtn: "✅ 确认已收到账款", revToday: "今日总营业额", sales: "交易笔数", sale: "交易笔数",
+        journalTitle: "每日交易流水历史账本", thTime: "时间", thAmount: "金额",
         emptyJournal: "暂无交易流水记录", valid: "正在云端验证系统授权...", mru: "乌吉亚"
     }
 };
@@ -45,7 +45,8 @@ function changeLanguage(lang) {
     
     // Toggle button active visual states
     document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById(`btn-${lang}`).classList.add('active');
+    const targetedBtn = document.getElementById(`btn-${lang}`);
+    if(targetedBtn) targetedBtn.classList.add('active');
     
     const t = translations[lang];
     const container = document.getElementById('mainContainer');
@@ -68,10 +69,9 @@ function changeLanguage(lang) {
     document.getElementById('qrNotice').innerText = t.qrNotice;
     document.getElementById('lbl-confirmBtn').innerText = t.confirmBtn;
     document.getElementById('lbl-revToday').innerText = t.revToday;
-    document.getElementById('lbl-journalTitle').innerText = t.journalTitle;
+    document.getElementById('lbl-txCount').innerText = t.sales;
     document.getElementById('lbl-thTime').innerText = t.thTime;
-    document.getElementById('lbl-thApp').innerText = t.thApp;
-    document.getElementById('lbl-thValue').innerText = t.thValue;
+    document.getElementById('lbl-thAmount').innerText = t.thAmount;
     
     document.getElementById('priceDisplay').innerText = (currentInput || "0") + " " + t.mru;
     renderJournal();
@@ -104,15 +104,18 @@ function connectToCloudServer() {
             document.getElementById('subBanner').innerText = `${data.businessName} • ${data.status}`;
             document.getElementById('authScreen').style.display = "none";
             document.getElementById('posWorkspace').style.display = "flex";
+            renderJournal();
         } else {
             alert(`SaaS blocked: ${data.status}`);
             document.getElementById('subBanner').innerText = "Access Denied";
         }
     })
     .catch(err => {
+        // Local fallback if the server is offline or not deployed yet
         document.getElementById('subBanner').innerText = currentLang === 'ar' ? "وضع التشغيل المحلي" : "Local Terminal Mode";
         document.getElementById('authScreen').style.display = "none";
         document.getElementById('posWorkspace').style.display = "flex";
+        renderJournal();
     });
 }
 
@@ -128,6 +131,7 @@ function generateQR() {
     
     const targetPayload = `bankily://pay?merchant=44112233&amount=${amount}`;
     
+    // Generates the visual graphic inside the placeholder block
     new QRCode(qrContainer, {
         text: targetPayload,
         width: 170,
@@ -140,7 +144,11 @@ function generateQR() {
 function clearAndPlayAudio() {
     if(!currentInput || parseFloat(currentInput) <= 0) return;
     
-    soundFeedback.play().catch(e => console.log("Audio playing offline"));
+    try {
+        soundFeedback.play().catch(e => console.log("Audio playing offline"));
+    } catch(err) {
+        console.log("Audio file initialization skip");
+    }
     
     const now = new Date();
     const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -159,19 +167,21 @@ function clearAndPlayAudio() {
 }
 
 function renderJournal() {
-    const body = document.getElementById('journalBody');
-    const revenueMetric = document.getElementById('revenueMetric');
-    const countMetric = document.getElementById('countMetric');
+    const body = document.getElementById('ledgerBody');
+    const revenueField = document.getElementById('revenueField');
+    const countField = document.getElementById('countField');
     const t = translations[currentLang];
+    
+    if (!body) return; // Prevent breakdown if UI elements aren't painted yet
     
     let logs = JSON.parse(localStorage.getItem('saas_logs')) || [];
     body.innerHTML = "";
     let total = 0;
     
     if(logs.length === 0) {
-        body.innerHTML = `<tr><td colspan="3" align="center" style="color:#9ca3af; padding:15px; font-size:12px;">${t.emptyJournal}</td></tr>`;
-        revenueMetric.innerText = "0.00 " + t.mru;
-        countMetric.innerText = "0 " + (currentLang === 'zh' ? t.sales : t.sale);
+        body.innerHTML = `<tr><td colspan="2" align="center" style="color:#9ca3af; padding:15px; font-size:12px;">${t.emptyJournal}</td></tr>`;
+        if (revenueField) revenueField.innerText = "0 " + t.mru;
+        if (countField) countField.innerText = "0";
         return;
     }
     
@@ -179,39 +189,22 @@ function renderJournal() {
         total += x.amount;
         const r = document.createElement('tr');
         r.innerHTML = `
-            <td style="padding:10px 8px; color:#6b7280;">${x.time}</td>
-            <td style="padding:10px 8px;"><span class="badge">BANKILY</span></td>
-            <td style="padding:10px 8px;" align="${currentLang === 'ar' ? 'left' : 'right'}"><strong>${x.amount.toFixed(2)} ${t.mru}</strong></td>
+            <td style="padding:10px 8px; color:#6b7280; text-align:left;">${x.time}</td>
+            <td style="padding:10px 8px; font-weight:bold; text-align:right; color:#111827;">${x.amount} ${t.mru}</td>
         `;
         body.appendChild(r);
     });
     
-    revenueMetric.innerText = total.toFixed(2) + " " + t.mru;
-    const suffix = logs.length === 1 && currentLang !== 'zh' ? t.sale : t.sales;
-    countMetric.innerText = `${logs.length} ${suffix}`;
+    if (revenueField) revenueField.innerText = total + " " + t.mru;
+    if (countField) countField.innerText = logs.length;
 }
 
-function clearDailyLog() {
-    if(confirm("Wipe log?")) { localStorage.removeItem('saas_logs'); renderJournal(); }
-}
-
-window.onload = function() { renderJournal(); };
 // ==========================================
 // SYSTEM CLEAR HOOK FOR MANAGEMENT TOOLS
 // ==========================================
 window.addEventListener('clearPOSLocalStorage', () => {
-    console.log("ShoufKash core engine: Resetting live session tracking telemetry data...");
-    
-    // 1. Reset standard layout variables (Change these to match your variable names if different)
-    if (typeof totalRevenue !== 'undefined') totalRevenue = 0;
-    if (typeof transactionCount !== 'undefined') transactionCount = 0;
-    if (typeof currentPriceInput !== 'undefined') currentPriceInput = "0";
-    if (typeof localizedLedgerArray !== 'undefined') localizedLedgerArray = [];
-
-    // 2. Clear out any saved cache records if you use local storage tracking
-    localStorage.removeItem('shoufkash_today_revenue');
-    localStorage.removeItem('shoufkash_today_count');
-    localStorage.removeItem('shoufkash_ledger_history');
-
-    console.log("Telemetry clean execution completed successfully.");
+    console.log("Core system tracking database flushed.");
+    localStorage.removeItem('saas_logs');
+    currentInput = "";
+    renderJournal();
 });
