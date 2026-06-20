@@ -1,4 +1,4 @@
-html<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -32,8 +32,18 @@ html<!DOCTYPE html>
         td { padding: 10px 8px; font-size: 14px; border-bottom: 1px solid #f3f4f6; }
         .badge { background: #eff6ff; color: #1d4ed8; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
         
+        /* New styling updates for management tools */
+        .journal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; border-top: 1px dashed #e5e7eb; padding-top: 12px; }
+        .btn-journal { border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-copy { background-color: #f3f4f6; color: #1f2937; border: 1px solid #d1d5db; }
+        .btn-copy:active { background-color: #e5e7eb; }
+        .btn-delete { background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+        .btn-delete:active { background-color: #fca5a5; }
+
         .rtl { direction: rtl; text-align: right; }
         .rtl .dashboard-row { flex-direction: row-reverse; }
+        .rtl th { text-align: right; }
+        .rtl #lbl-thAmount { text-align: left; }
     </style>
 </head>
 <body>
@@ -97,70 +107,43 @@ html<!DOCTYPE html>
             <div class="dashboard-row">
                 <div>
                     <div id="lbl-revToday" style="font-size:11px; color:#9ca3af; text-transform:uppercase; font-weight:bold;">Revenue Today</div>
-                    <div class="dashboard-amount" id="revenueMetric">0.00 MRU</div>
+                    <div class="dashboard-amount" id="revenueField">0 MRU</div>
                 </div>
-                <div class="sales-badge" id="countMetric">0 Sales</div>
+                <div style="text-align: right;">
+                    <div id="lbl-txCount" style="font-size:11px; color:#9ca3af; text-transform:uppercase; font-weight:bold;">Transactions</div>
+                    <div class="dashboard-amount" id="countField" style="color:#93c5fd;">0</div>
+                </div>
             </div>
 
-            <!-- Sales Log Table List -->
-            <div class="card" style="padding:0; overflow:hidden;">
-                <div id="lbl-journalTitle" style="background:#f9fafb; padding:12px; border-bottom:1px solid #e5e7eb; font-weight:bold; font-size:12px; color:#374151;">TRANSACTION HISTORY JOURNAL</div>
-                <table style="width:100%;">
+            <!-- Recent Ledger Card -->
+            <div class="card" style="padding:10px;">
+                <table id="txnTable">
                     <thead>
                         <tr>
-                            <th id="lbl-thTime" align="left">Time</th>
-                            <th id="lbl-thApp" align="left">App</th>
-                            <th id="lbl-thValue" align="right">Value</th>
+                            <th id="lbl-thTime" style="text-align:left;">Time</th>
+                            <th id="lbl-thAmount" style="text-align:right;">Amount</th>
                         </tr>
                     </thead>
-                    <tbody id="journalBody">
-                        <tr><td id="lbl-emptyJournal" colspan="3" align="center" style="color:#9ca3af; padding:15px; font-size:12px;">Journal empty</td></tr>
+                    <tbody id="ledgerBody">
+                        <!-- Dynamic transaction rows injected here -->
                     </tbody>
                 </table>
-            </div>
 
+                <!-- Action Button Row for Management -->
+                <div class="journal-actions">
+                    <button class="btn-journal btn-copy" id="lbl-copyBtn" onclick="copyJournalToClipboard()">📋 Copy Journal</button>
+                    <button class="btn-journal btn-delete" id="lbl-clearBtn" onclick="clearDailyHistory()">🗑️ Clear History</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-<!-- NATIVE OFFLINE QR GENERATION ENGINE MATRIX CODE -->
+
 <script>
-window.QRCode = function(element, options) {
-    element.innerHTML = "";
-    var text = options.text || "";
-    var width = options.width || 170;
-    var height = options.height || 170;
-    var canvas = document.createElement('canvas');
-    canvas.width = width; 
-    canvas.height = height;
-    var ctx = canvas.getContext('2d');
-    
-    ctx.fillStyle = "#ffffff"; 
-    ctx.fillRect(0, 0, width, height);
-    ctx.fillStyle = "#111827";
-    
-    ctx.fillRect(10, 10, 50, 50); ctx.fillStyle = "#ffffff"; ctx.fillRect(17, 17, 36, 36); ctx.fillStyle = "#111827"; ctx.fillRect(24, 24, 22, 22);
-    ctx.fillRect(width - 60, 10, 50, 50); ctx.fillStyle = "#ffffff"; ctx.fillRect(width - 53, 17, 36, 36); ctx.fillStyle = "#111827"; ctx.fillRect(width - 46, 24, 22, 22);
-    ctx.fillRect(10, height - 60, 50, 50); ctx.fillStyle = "#ffffff"; ctx.fillRect(17, height - 53, 36, 36); ctx.fillStyle = "#111827"; ctx.fillRect(24, height - 46, 22, 22);
-    
-    var seed = 0; 
-    for (var i = 0; i < text.length; i++) { seed += text.charCodeAt(i); }
-    
-    for (var x = 65; x < width - 65; x += 6) {
-        for (var y = 65; y < height - 65; y += 6) {
-            if (((Math.abs(Math.sin(seed++)) * 1000) % 1) > 0.45) { ctx.fillRect(x, y, 5, 5); }
-        }
-    }
-    
-    for (var k = 0; k < 40; k++) {
-        var edgeX = Math.floor((Math.abs(Math.cos(seed++)) * 1000) % (width - 20)) + 10;
-        var edgeY = Math.floor((Math.abs(Math.sin(seed++)) * 1000) % (height - 20)) + 10;
-        if (!((edgeX < 70 && edgeY < 70) || (edgeX > width - 70 && edgeY < 70) || (edgeX < 70 && edgeY > height - 70))) { 
-            ctx.fillRect(Math.floor(edgeX/6)*6, Math.floor(edgeY/6)*6, 5, 5); 
-        }
-    }
-    element.appendChild(canvas);
-};
-</script>
-<script src="app.js"></script>
-</body>
-</html>
+    // System language translation definitions
+    const dictionary = {
+        en: {
+            title: "ShoufKash POS", activationTitle: "SaaS Activation Screen",
+            phoneField: "ENTER MERCHANT REGISTERED PHONE", activationBtn: "🔓 Activate Terminal Session",
+            qrNotice: "Use the integrated calculator above and tap 'QR' to render payment link.",
+            confirmBtn: "✅ Confirm Payment Received", revToday: "Revenue Today", txCount: "Transactions",thTime: "Time", thAmount: "Amount",copyBtn: "📋 Copy Journal", clearBtn: "🗑️ Clear History",copiedMsg: "Journal copied to clipboard!", clearConfirm: "Are you sure you want to clear today's transaction history?"},ar: {title: "شوف كاش POS", activationTitle: "شاشة تفعيل النظام",phoneField: "أدخل رقم الهاتف المسجل للمواطن", activationBtn: "🔓 تفعيل جلسة الجهاز",qrNotice: "استخدم الآلة الحاسبة أعلاه واضغط على 'QR' لتوليد رابط الدفع.",confirmBtn: "✅ تأكيد استلام الدفعة", revToday: "مبيعات اليوم", txCount: "العمليات",thTime: "الوقت", thAmount: "المبلغ",copyBtn: "📋 نسخ السجل", clearBtn: "🗑️ مسح التاريخ",copiedMsg: "تم نسخ السجل للحافظة!", clearConfirm: "هل أنت متأكد من مسح سجل معاملات اليوم؟"},fr: {title: "Terminal ShoufKash", activationTitle: "Écran d'activation SaaS",phoneField: "ENTRER LE TÉLÉPHONE DU COMMERÇANT", activationBtn: "🔓 Activer la session",qrNotice: "Utilisez le calculateur ci-dessus et appuyez sur 'QR' pour générer le lien.",confirmBtn: "✅ Confirmer le paiement reçu", revToday: "Revenu Aujourd'hui", txCount: "Transactions",thTime: "Heure", thAmount: "Montant",copyBtn: "📋 Copier Journal", clearBtn: "🗑️ Effacer l'historique",copiedMsg: "Journal copié dans le presse-papiers!", clearConfirm: "Voulez-vous vraiment effacer l'historique d'aujourd'hui?"},zh: {title: "ShoufKash 收银台", activationTitle: "SaaS 系统激活界面",phoneField: "输入商户注册手机号", activationBtn: "🔓 激活终端系统",qrNotice: "使用上方计算器输入金额，并点击 'QR' 生成支付链接。",confirmBtn: "✅ 确认已收到货款", revToday: "今日营业额", txCount: "交易笔数",thTime: "时间", thAmount: "金额",copyBtn: "📋 复制日志", clearBtn: "🗑️ 清除历史",copiedMsg: "日志已成功复制到剪贴板！", clearConfirm: "您确定要清除今天的交易历史记录吗？"}};let activeLang = 'en';function changeLanguage(lang) {activeLang = lang;document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));document.getElementById('btn-' + lang).classList.add('active');const container = document.getElementById('mainContainer');if(lang === 'ar') {container.classList.add('rtl');} else {container.classList.remove('rtl');}document.getElementById('titleBanner').innerText = dictionary[lang].title;document.getElementById('lbl-activationTitle').innerText = dictionary[lang].activationTitle;document.getElementById('lbl-phoneField').innerText = dictionary[lang].phoneField;document.getElementById('lbl-activationBtn').innerText = dictionary[lang].activationBtn;document.getElementById('qrNotice').innerText = dictionary[lang].qrNotice;document.getElementById('lbl-confirmBtn').innerText = dictionary[lang].confirmBtn;document.getElementById('lbl-revToday').innerText = dictionary[lang].revToday;document.getElementById('lbl-txCount').innerText = dictionary[lang].txCount;document.getElementById('lbl-thTime').innerText = dictionary[lang].thTime;document.getElementById('lbl-thAmount').innerText = dictionary[lang].thAmount;// Update language for new action buttonsdocument.getElementById('lbl-copyBtn').innerText = dictionary[lang].copyBtn;document.getElementById('lbl-clearBtn').innerText = dictionary[lang].clearBtn;}// Function to parse the UI table data and copy text to system clipboardfunction copyJournalToClipboard() {const rows = document.querySelectorAll("#ledgerBody tr");if(rows.length === 0) {alert(activeLang === 'ar' ? "السجل فارغ" : "Journal is empty");return;}let reportText = --- ShoufKash POS Journal ---\n;rows.forEach(row => {const time = row.cells[0].innerText;const amount = row.cells[1].innerText;reportText += 🕒 ${time} -> 💰 ${amount}\n;});const totalRev = document.getElementById("revenueField").innerText;const totalCount = document.getElementById("countField").innerText;reportText += ----------------------------\n📊 Total Rev: ${totalRev}\n🔢 Total Tx: ${totalCount};navigator.clipboard.writeText(reportText).then(() => {alert(dictionary[activeLang].copiedMsg);}).catch(err => {console.error('Failed to copy text: ', err);});}// Function to flush daily telemetry variables and clear dynamic table elementsfunction clearDailyHistory() {if (confirm(dictionary[activeLang].clearConfirm)) {document.getElementById("ledgerBody").innerHTML = "";document.getElementById("revenueField").innerText = "0 MRU";document.getElementById("countField").innerText = "0";// If app.js handles local variables for totals, reset them there via dispatchEvent or custom hookswindow.dispatchEvent(new CustomEvent('clearPOSLocalStorage'));}}
