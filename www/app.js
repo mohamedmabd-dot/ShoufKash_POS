@@ -196,3 +196,22 @@ function clearDailyLog() {
 }
 
 window.onload = function() { renderJournal(); };
+// ==========================================
+// SYSTEM CLEAR HOOK FOR MANAGEMENT TOOLS
+// ==========================================
+window.addEventListener('clearPOSLocalStorage', () => {
+    console.log("ShoufKash core engine: Resetting live session tracking telemetry data...");
+    
+    // 1. Reset standard layout variables (Change these to match your variable names if different)
+    if (typeof totalRevenue !== 'undefined') totalRevenue = 0;
+    if (typeof transactionCount !== 'undefined') transactionCount = 0;
+    if (typeof currentPriceInput !== 'undefined') currentPriceInput = "0";
+    if (typeof localizedLedgerArray !== 'undefined') localizedLedgerArray = [];
+
+    // 2. Clear out any saved cache records if you use local storage tracking
+    localStorage.removeItem('shoufkash_today_revenue');
+    localStorage.removeItem('shoufkash_today_count');
+    localStorage.removeItem('shoufkash_ledger_history');
+
+    console.log("Telemetry clean execution completed successfully.");
+});

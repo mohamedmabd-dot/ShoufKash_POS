@@ -146,4 +146,103 @@
             title: "ShoufKash POS", activationTitle: "SaaS Activation Screen",
             phoneField: "ENTER MERCHANT REGISTERED PHONE", activationBtn: "🔓 Activate Terminal Session",
             qrNotice: "Use the integrated calculator above and tap 'QR' to render payment link.",
-            confirmBtn: "✅ Confirm Payment Received", revToday: "Revenue Today", txCount: "Transactions",thTime: "Time", thAmount: "Amount",copyBtn: "📋 Copy Journal", clearBtn: "🗑️ Clear History",copiedMsg: "Journal copied to clipboard!", clearConfirm: "Are you sure you want to clear today's transaction history?"},ar: {title: "شوف كاش POS", activationTitle: "شاشة تفعيل النظام",phoneField: "أدخل رقم الهاتف المسجل للمواطن", activationBtn: "🔓 تفعيل جلسة الجهاز",qrNotice: "استخدم الآلة الحاسبة أعلاه واضغط على 'QR' لتوليد رابط الدفع.",confirmBtn: "✅ تأكيد استلام الدفعة", revToday: "مبيعات اليوم", txCount: "العمليات",thTime: "الوقت", thAmount: "المبلغ",copyBtn: "📋 نسخ السجل", clearBtn: "🗑️ مسح التاريخ",copiedMsg: "تم نسخ السجل للحافظة!", clearConfirm: "هل أنت متأكد من مسح سجل معاملات اليوم؟"},fr: {title: "Terminal ShoufKash", activationTitle: "Écran d'activation SaaS",phoneField: "ENTRER LE TÉLÉPHONE DU COMMERÇANT", activationBtn: "🔓 Activer la session",qrNotice: "Utilisez le calculateur ci-dessus et appuyez sur 'QR' pour générer le lien.",confirmBtn: "✅ Confirmer le paiement reçu", revToday: "Revenu Aujourd'hui", txCount: "Transactions",thTime: "Heure", thAmount: "Montant",copyBtn: "📋 Copier Journal", clearBtn: "🗑️ Effacer l'historique",copiedMsg: "Journal copié dans le presse-papiers!", clearConfirm: "Voulez-vous vraiment effacer l'historique d'aujourd'hui?"},zh: {title: "ShoufKash 收银台", activationTitle: "SaaS 系统激活界面",phoneField: "输入商户注册手机号", activationBtn: "🔓 激活终端系统",qrNotice: "使用上方计算器输入金额，并点击 'QR' 生成支付链接。",confirmBtn: "✅ 确认已收到货款", revToday: "今日营业额", txCount: "交易笔数",thTime: "时间", thAmount: "金额",copyBtn: "📋 复制日志", clearBtn: "🗑️ 清除历史",copiedMsg: "日志已成功复制到剪贴板！", clearConfirm: "您确定要清除今天的交易历史记录吗？"}};let activeLang = 'en';function changeLanguage(lang) {activeLang = lang;document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));document.getElementById('btn-' + lang).classList.add('active');const container = document.getElementById('mainContainer');if(lang === 'ar') {container.classList.add('rtl');} else {container.classList.remove('rtl');}document.getElementById('titleBanner').innerText = dictionary[lang].title;document.getElementById('lbl-activationTitle').innerText = dictionary[lang].activationTitle;document.getElementById('lbl-phoneField').innerText = dictionary[lang].phoneField;document.getElementById('lbl-activationBtn').innerText = dictionary[lang].activationBtn;document.getElementById('qrNotice').innerText = dictionary[lang].qrNotice;document.getElementById('lbl-confirmBtn').innerText = dictionary[lang].confirmBtn;document.getElementById('lbl-revToday').innerText = dictionary[lang].revToday;document.getElementById('lbl-txCount').innerText = dictionary[lang].txCount;document.getElementById('lbl-thTime').innerText = dictionary[lang].thTime;document.getElementById('lbl-thAmount').innerText = dictionary[lang].thAmount;// Update language for new action buttonsdocument.getElementById('lbl-copyBtn').innerText = dictionary[lang].copyBtn;document.getElementById('lbl-clearBtn').innerText = dictionary[lang].clearBtn;}// Function to parse the UI table data and copy text to system clipboardfunction copyJournalToClipboard() {const rows = document.querySelectorAll("#ledgerBody tr");if(rows.length === 0) {alert(activeLang === 'ar' ? "السجل فارغ" : "Journal is empty");return;}let reportText = --- ShoufKash POS Journal ---\n;rows.forEach(row => {const time = row.cells[0].innerText;const amount = row.cells[1].innerText;reportText += 🕒 ${time} -> 💰 ${amount}\n;});const totalRev = document.getElementById("revenueField").innerText;const totalCount = document.getElementById("countField").innerText;reportText += ----------------------------\n📊 Total Rev: ${totalRev}\n🔢 Total Tx: ${totalCount};navigator.clipboard.writeText(reportText).then(() => {alert(dictionary[activeLang].copiedMsg);}).catch(err => {console.error('Failed to copy text: ', err);});}// Function to flush daily telemetry variables and clear dynamic table elementsfunction clearDailyHistory() {if (confirm(dictionary[activeLang].clearConfirm)) {document.getElementById("ledgerBody").innerHTML = "";document.getElementById("revenueField").innerText = "0 MRU";document.getElementById("countField").innerText = "0";// If app.js handles local variables for totals, reset them there via dispatchEvent or custom hookswindow.dispatchEvent(new CustomEvent('clearPOSLocalStorage'));}}
+            confirmBtn: "✅ Confirm Payment Received", revToday: "Revenue Today", txCount: "Transactions",
+            thTime: "Time", thAmount: "Amount",
+            copyBtn: "📋 Copy Journal", clearBtn: "🗑️ Clear History",
+            copiedMsg: "Journal copied to clipboard!", clearConfirm: "Are you sure you want to clear today's transaction history?"
+        },
+        ar: {
+            title: "شوف كاش POS", activationTitle: "شاشة تفعيل النظام",
+            phoneField: "أدخل رقم الهاتف المسجل للمواطن", activationBtn: "🔓 تفعيل جلسة الجهاز",
+            qrNotice: "استخدم الآلة الحاسبة أعلاه واضغط على 'QR' لتوليد رابط الدفع.",
+            confirmBtn: "✅ تأكيد استلام الدفعة", revToday: "مبيعات اليوم", txCount: "العمليات",
+            thTime: "الوقت", thAmount: "المبلغ",
+            copyBtn: "📋 نسخ السجل", clearBtn: "🗑️ مسح التاريخ",
+            copiedMsg: "تم نسخ السجل للحافظة!", clearConfirm: "هل أنت متأكد من مسح سجل معاملات اليوم؟"
+        },
+        fr: {
+            title: "Terminal ShoufKash", activationTitle: "Écran d'activation SaaS",
+            phoneField: "ENTRER LE TÉLÉPHONE DU COMMERÇANT", activationBtn: "🔓 Activer la session",
+            qrNotice: "Utilisez le calculateur ci-dessus et appuyez sur 'QR' pour générer le lien.",
+            confirmBtn: "✅ Confirmer le paiement reçu", revToday: "Revenu Aujourd'hui", txCount: "Transactions",
+            thTime: "Heure", thAmount: "Montant",
+            copyBtn: "📋 Copier Journal", clearBtn: "🗑️ Effacer l'historique",
+            copiedMsg: "Journal copié dans le presse-papiers!", clearConfirm: "Voulez-vous vraiment effacer l'historique d'aujourd'hui?"
+        },
+        zh: {
+            title: "ShoufKash 收银台", activationTitle: "SaaS 系统激活界面",
+            phoneField: "输入商户注册手机号", activationBtn: "🔓 激活终端系统",
+            qrNotice: "使用上方计算器输入金额，并点击 'QR' 生成支付链接。",
+            confirmBtn: "✅ 确认已收到货款", revToday: "今日营业额", txCount: "交易笔数",
+            thTime: "时间", thAmount: "金额",
+            copyBtn: "📋 复制日志", clearBtn: "🗑️ 清除历史",
+            copiedMsg: "日志已成功复制到剪贴板！", clearConfirm: "您确定要清除今天的交易历史记录吗？"
+        }
+    };
+
+    let activeLang = 'en';
+
+    function changeLanguage(lang) {
+        activeLang = lang;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + lang).classList.add('active');
+        
+        const container = document.getElementById('mainContainer');
+        if(lang === 'ar') {
+            container.classList.add('rtl');
+        } else {
+            container.classList.remove('rtl');
+        }
+
+        document.getElementById('titleBanner').innerText = dictionary[lang].title;
+        document.getElementById('lbl-activationTitle').innerText = dictionary[lang].activationTitle;
+        document.getElementById('lbl-phoneField').innerText = dictionary[lang].phoneField;
+        document.getElementById('lbl-activationBtn').innerText = dictionary[lang].activationBtn;
+        document.getElementById('qrNotice').innerText = dictionary[lang].qrNotice;
+        document.getElementById('lbl-confirmBtn').innerText = dictionary[lang].confirmBtn;
+        document.getElementById('lbl-revToday').innerText = dictionary[lang].revToday;
+        document.getElementById('lbl-txCount').innerText = dictionary[lang].txCount;
+        document.getElementById('lbl-thTime').innerText = dictionary[lang].thTime;
+        document.getElementById('lbl-thAmount').innerText = dictionary[lang].thAmount;
+        document.getElementById('lbl-copyBtn').innerText = dictionary[lang].copyBtn;
+        document.getElementById('lbl-clearBtn').innerText = dictionary[lang].clearBtn;
+    }
+
+    function copyJournalToClipboard() {
+        const rows = document.querySelectorAll("#ledgerBody tr");
+        if(rows.length === 0) {
+            alert(activeLang === 'ar' ? "السجل فارغ" : "Journal is empty");
+            return;
+        }
+
+        let reportText = `--- ShoufKash POS Journal ---\n`;
+        rows.forEach(row => {
+            const time = row.cells[0].innerText;
+            const amount = row.cells[1].innerText;
+            reportText += `🕒 ${time} -> 💰 ${amount}\n`;
+        });
+        
+        const totalRev = document.getElementById("revenueField").innerText;
+        const totalCount = document.getElementById("countField").innerText;
+        reportText += `----------------------------\n📊 Total Rev: ${totalRev}\n🔢 Total Tx: ${totalCount}`;
+
+        navigator.clipboard.writeText(reportText).then(() => {
+            alert(dictionary[activeLang].copiedMsg);
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    }
+
+    function clearDailyHistory() {
+        if (confirm(dictionary[activeLang].clearConfirm)) {
+            document.getElementById("ledgerBody").innerHTML = "";
+            document.getElementById("revenueField").innerText = "0 MRU";
+            document.getElementById("countField").innerText = "0";
+            
+            // Fires the signal to app.js
+            window.dispatchEvent(new CustomEvent('clearPOSLocalStorage'));
+        }
+    }
+</script>
+</body>
+</html>
