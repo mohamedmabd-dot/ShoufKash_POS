@@ -1,4 +1,4 @@
-```javascript
+
 let currentInput = "";
 let serverUrl = "https://onrender.com"; 
 const soundFeedback = new Audio('payment_success.wav');
