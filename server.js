@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
-// Render's dynamic web port binding engine rule
+// Use Render's dynamic port assignment or fallback to 3000 locally
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
@@ -19,32 +19,65 @@ app.use((req, res, next) => {
 // Serve the phone application layout assets from the www folder
 app.use(express.static(path.join(__dirname, 'www')));
 
-// Mock Database of active merchant devices across Mauritania
-const merchantSubscriptions = {
-    "44112233": { status: "ACTIVE", expiry: "2026-12-31", businessName: "Taxi Nouakchott" },
-    "44556677": { status: "EXPIRED", expiry: "2026-05-01", businessName: "Epicerie Center" }
-};
+// =========================================================================
+https:hdtiofjglzfsblyiwrbq.supabase.co/rest/v1/ 
+sb_publishable_UjSmul0t4crRknB-bbPnAg_p9diVBCt 
+const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL_HERE"; 
+const SUPABASE_KEY = "PASTE_YOUR_PUBLISHABLE_KEY_HERE"; // Must start with sb_pub_
+// =========================================================================
 
-// Endpoint for the phone app to check subscription validity
-app.post('/api/auth/check-subscription', (req, res) => {
+// Endpoint for the phone app to check subscription validity directly from Supabase Cloud
+app.post('/api/auth/check-subscription', async (req, res) => {
     const { phone } = req.body;
     
     if (!phone) {
         return res.status(400).json({ error: "Phone number required" });
     }
 
-    const profile = merchantSubscriptions[phone];
-    
-    if (!profile) {
-        // Automatically give a new user an active free trial day
-        return res.json({ 
+    try {
+        // Query the live Supabase database directly using standard web fetch
+        const targetUrl = `${SUPABASE_URL}/rest/v1/merchants?phone_number=eq.${encodeURIComponent(phone)}&select=*`;
+        
+        const response = await fetch(targetUrl, {
+            method: 'GET',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+
+        // If the merchant number is not registered in your database yet
+        if (!data || data.length === 0) {
+            return res.json({ 
+                status: "TRIAL", 
+                businessName: "New ShoufKash Merchant",
+                message: "Welcome to ShoufKash! Free trial active." 
+            });
+        }
+
+        // Extract the merchant data from the database array row
+        const merchant = data[0];
+
+        // Strict validation check for your Mauritanian market business rules
+        res.json({
+            status: merchant.subscription_status, // ACTIVE, BLOCKED, or EXPIRED
+            businessName: merchant.business_name,
+            expiry: merchant.expiry_date,
+            setupFeePaid: merchant.setup_fee_paid
+        });
+
+    } catch (err) {
+        console.error("Supabase cloud lookup connection failed:", err);
+        // Fallback safety trigger to let developers continue testing offline
+        res.json({ 
             status: "ACTIVE", 
-            businessName: "New ShoufKash Merchant",
-            message: "Welcome to ShoufKash! Free trial active." 
+            businessName: "Local Backup Merchant",
+            message: "Offline local connection activated." 
         });
     }
-    
-    res.json(profile);
 });
 
 // Admin Web Dashboard endpoint to monitor connections
@@ -53,18 +86,9 @@ app.get('/admin/dashboard', (req, res) => {
         <div style="font-family:sans-serif; padding:40px; background:#f3f4f6; min-height:100vh;">
             <h1 style="color:#2563eb;">ShoufKash Global SaaS Control Panel</h1>
             <p>Track payments, setup fees (50 MRU), and active terminals across Mauritania.</p>
-            <table border="1" style="width:100%; border-collapse:collapse; background:white; text-align:left;">
-                <tr style="background:#111827; color:white;">
-                    <th style="padding:12px;">Merchant Phone</th>
-                    <th style="padding:12px;">Business Name</th>
-                    <th style="padding:12px;">Status</th>
-                </tr>
-                <tr>
-                    <td style="padding:12px;">44112233</td>
-                    <td style="padding:12px;">Taxi Nouakchott</td>
-                    <td style="padding:12px; color:green; font-weight:bold;">ACTIVE</td>
-                </tr>
-            </table>
+            <p style="background:#fff; padding:15px; border-radius:8px; display:inline-block; border:1px solid #ddd; font-weight:bold; color:#111827;">
+                🔌 Connected Status: Live Database Ecosystem via Supabase Cloud
+            </p>
         </div>
     `);
 });

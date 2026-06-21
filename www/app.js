@@ -1,6 +1,6 @@
 let currentInput = "";
 // Set your live Render dashboard web service string URL context here
-let serverUrl = "https://onrender.com"; 
+let serverUrl = "https://shoufkash-pos.onrender.com"; 
 const soundFeedback = new Audio('payment_success.wav');
 let currentLang = "en";
 
