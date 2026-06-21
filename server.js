@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, 'www')));
 
 // =========================================================================
-https:hdtiofjglzfsblyiwrbq.supabase.co/rest/v1/ 
+https://supabase.com/dashboard/project/hdtiofjglzfsblyiwrbq/settings/general
 sb_publishable_UjSmul0t4crRknB-bbPnAg_p9diVBCt 
 const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL_HERE"; 
 const SUPABASE_KEY = "PASTE_YOUR_PUBLISHABLE_KEY_HERE"; // Must start with sb_pub_
