@@ -247,7 +247,35 @@
 
 <!-- Link your app.js logic engine to index.html -->
 <script src="app.js"></script>
+<script>
+  // Wait for the page structure to be fully loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    var exitButton = document.getElementById('exit-btn');
+    
+    if (exitButton) {
+      exitButton.addEventListener('click', function() {
+        console.log("Exit button clicked");
 
+        // 1. Try Cordova environment first
+        if (navigator.app && navigator.app.exitApp) {
+          navigator.app.exitApp();
+        } 
+        // 2. Try Capacitor environment next
+        else if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+          window.Capacitor.Plugins.App.exitApp();
+        } 
+        // 3. Computer Browser Fallback
+        else {
+          // Attempt to force close the tab or window
+          window.open('', '_self', '').close();
+          
+          // Provide instant visual confirmation on your laptop screen
+          alert("Application close request triggered successfully! (Browsers restrict closing tabs manually for safety, but this will safely close on your real Android phone).");
+        }
+      });
+    }
+  });
+</script>
 </body>
 </html>
 
