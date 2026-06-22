@@ -7,24 +7,33 @@
     <title>ShoufKash Terminal</title>
     <style>
         .exit-button {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            background-color: #ff4d4d;
-            color: #ffffff;
-            border: none;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0px 2px 5px rgba(0,0,0,0.3);
-         }
+           position: fixed;
+           top: 18px;
+           right: 18px;
+           background: rgba(255, 255, 255, 0.15);
+           color: #ffffff;
+           border: 1.5px solid rgba(255, 255, 255, 0.6);
+           border-radius: 50%;
+           width: 36px;
+           height: 36px;
+           cursor: pointer;
+           z-index: 9999;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+           transition: all 0.2s ease;
+           padding: 0;
+    }
+    .exit-button:active {
+         background: rgba(255, 255, 255, 0.3);
+         transform: scale(0.95);
+    }
+    .exit-button svg {
+         width: 18px;
+         height: 18px;
+    }
+
         body { background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
         .app-container { max-width: 420px; margin: 0 auto; background: #ffffff; min-height: 100vh; display: flex; flex-direction: column; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         header { background: linear-gradient(135deg, #1d4ed8, #2563eb); color: white; padding: 20px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; position: relative; z-index: 5; }
@@ -80,8 +89,13 @@
 </script>
 <body>
 <!-- Visual Exit Button -->
-<button id="exit-btn" class="exit-button" aria-label="Exit Application">✕</button>
-<!-- Button Appearance Styling -->
+<!-- High-End Engine Start/Stop Power Button Alternative -->
+<button id="exit-btn" class="exit-button" aria-label="Exit Application" onclick="handleNativeExit()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+    <line x1="12" y1="2" x2="12" y2="12"></line>
+  </svg>
+</button>
 
 <div class="app-container" id="mainContainer">
     <header>
@@ -278,25 +292,36 @@
   });
 </script>
 <script>
-  function setupExitButton() {
-    var exitButton = document.getElementById('exit-btn');
-    if (exitButton) {
-      exitButton.onclick = function() {
-        if (navigator.app && navigator.app.exitApp) {
-          navigator.app.exitApp();
-        } 
-        else if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-          window.Capacitor.Plugins.App.exitApp();
-        } 
-        else {
-          window.open('', '_self', '').close();
-          alert("Application close request triggered successfully!");
-        }
-      };
+  // Fail-safe global action execution loop 
+  window.handleNativeExit = function() {
+    console.log("Native exit sequence initialized.");
+    
+    try {
+      // 1. Core Android hardware interface bridge fallback 
+      if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
+        navigator.app.exitApp();
+        return;
+      }
+      
+      // 2. Modern Capacitor systems lifecycle bridge
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+        window.Capacitor.Plugins.App.exitApp();
+        return;
+      }
+      
+      // 3. Native Device execution context fallback
+      if (window.device && window.device.exitApp) {
+        window.device.exitApp();
+        return;
+      }
+    } catch (error) {
+      console.log("Native exit routing failed: ", error);
     }
-  }
-  document.addEventListener('DOMContentLoaded', setupExitButton);
-  document.addEventListener('deviceready', setupExitButton);
+
+    // 4. Laptop local computer browser simulation tab closing fallback
+    window.open('', '_self', '').close();
+    alert("Application exit requested! (Laptop testing simulation active).");
+  };
 </script>
 </body>
 </html>
