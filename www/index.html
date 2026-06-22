@@ -1,29 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<body>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>ShoufKash Terminal</title>
     <style>
-        .exit-button {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  background-color: #ff4d4d;
-  color: #ffffff;
-  border: none;
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0px 2px 5px rgba(0,0,0,0.3);
-}
+            .exit-button {
+                position: fixed;
+                top: 15px;
+                right: 15px;
+                background-color: #ff4d4d;
+                color: #ffffff;
+                border: none;
+                border-radius: 50%;
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0px 2px 5px rgba(0,0,0,0.3);
+            }
         body { background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
         .app-container { max-width: 420px; margin: 0 auto; background: #ffffff; min-height: 100vh; display: flex; flex-direction: column; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         header { background: linear-gradient(135deg, #1d4ed8, #2563eb); color: white; padding: 20px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; position: relative; z-index: 5; }
@@ -275,6 +276,27 @@
       });
     }
   });
+</script>
+<script>
+  function setupExitButton() {
+    var exitButton = document.getElementById('exit-btn');
+    if (exitButton) {
+      exitButton.onclick = function() {
+        if (navigator.app && navigator.app.exitApp) {
+          navigator.app.exitApp();
+        } 
+        else if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+          window.Capacitor.Plugins.App.exitApp();
+        } 
+        else {
+          window.open('', '_self', '').close();
+          alert("Application close request triggered successfully!");
+        }
+      };
+    }
+  }
+  document.addEventListener('DOMContentLoaded', setupExitButton);
+  document.addEventListener('deviceready', setupExitButton);
 </script>
 </body>
 </html>
