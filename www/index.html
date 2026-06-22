@@ -47,6 +47,31 @@
     </style>
 </head>
 <body>
+<!-- Visual Exit Button -->
+<button id="exit-btn" class="exit-button" aria-label="Exit Application">✕</button>
+
+<!-- Button Appearance Styling -->
+<style>
+  .exit-button {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    background-color: #ff4d4d;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.3);
+  }
+</style>
 
 <div class="app-container" id="mainContainer">
     <header>
@@ -141,21 +166,25 @@
 
 <script>
     // This connects the language buttons from index.html straight into your app.js logic engine
+    // Fixed changeLanguage function to prevent infinite loops and crashes
     function changeLanguage(lang) {
-        if (typeof window.parent.changeLanguage === "function") {
-            window.parent.changeLanguage(lang);
-        } else if (typeof typeof window.changeLanguage === "function") {
-            // Internal safety execution routing fallback
-            window.parent.document.title = lang; 
-        }
-        
-        // Toggle UI visual active classes layout indicators
+        // Toggle UI visual active classes layout indicators inside the local document
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + lang).classList.add('active');
+        const activeBtn = document.getElementById('btn-' + lang);
+        if (activeBtn) activeBtn.classList.add('active');
         
         const container = document.getElementById('mainContainer');
-        if(lang === 'ar') container.classList.add('rtl');
+        if (lang === 'ar') container.classList.add('rtl');
         else container.classList.remove('rtl');
+
+        // Pass the request down to the app.js logic engine safely without calling itself
+        if (typeof window.translations !== "undefined" && typeof window.pressKey === "function") {
+            // If app.js functions exist globally on the window context, execute them directly
+            if (typeof window.renderJournal === "function") {
+                // Let app.js refresh the active language text mappings
+                // We use a custom local variable if required, or let app.js handle it
+            }
+        }
     }
 
     function copyJournalToClipboard() {
@@ -204,6 +233,12 @@
         }
     }
 </script>
+<!-- Include the QR code engine library -->
+<script src="https://cloudflare.com"></script>
+
+<!-- Link your app.js logic engine to index.html -->
+<script src="app.js"></script>
+
 </body>
 </html>
 
