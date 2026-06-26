@@ -76,7 +76,7 @@
 <body>
 
 <!-- High-End Engine Start/Stop Power Button -->
-<button id="exit-btn" class="exit-button" aria-label="Exit Application" onclick="handleNativeExit()">
+<button id="exit-btn" class="exit-button" aria-label="Exit Application" onclick="setupExitButton()"
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
     <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
     <line x1="12" y1="2" x2="12" y2="12"></line>
@@ -417,6 +417,45 @@
   
   // Wire execution event redirect triggers directly to original elements
   document.getElementById('btn-finalAccess').onclick = window.checkDatabaseVerification;
+    // Hardwired fail-safe mobile touch link
+  document.getElementById('exit-btn').onclick = function() {
+      window.handleNativeExit();
+  };
+    // Mobile platform safe initialization engine
+  window.setupExitButton = function() {
+    console.log("Exit engine triggered.");
+    // 1. Initial login state toggle handler
+    var initialMsg = document.getElementById('initialStateMessage');
+    var regWrapper = document.getElementById('phoneRegistrationWrapper');
+    
+    if (initialMsg && initialMsg.style.display !== 'none') {
+        initialMsg.style.display = 'none';
+        if (regWrapper) regWrapper.style.display = 'block';
+        return; // Stop here if we are just opening the login fields
+    }
+
+    // 2. Core hardware shutdown hooks if inside workspace
+    if (document.getElementById('posWorkspace').style.display === 'flex') {
+        if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
+          navigator.app.exitApp();
+        } else if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+          window.Capacitor.Plugins.App.exitApp();
+        } else {
+          window.open('', '_self', '').close();
+          alert("Application close request triggered successfully!");
+        }
+    }
+  };
+
+  // Force phone layers to register the action no matter when it boots
+  document.addEventListener('DOMContentLoaded', function() {
+     var btn = document.getElementById('exit-btn');
+     if(btn) btn.onclick = window.setupExitButton;
+  });
+  document.addEventListener('deviceready', function() {
+     var btn = document.getElementById('exit-btn');
+     if(btn) btn.onclick = window.setupExitButton;
+  });
 </script>
 </body>
 </html>
