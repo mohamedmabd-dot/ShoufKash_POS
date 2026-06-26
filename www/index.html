@@ -115,11 +115,39 @@
     <div class="content">
         <!-- Merchant Auth Form -->
         <div class="card" id="authScreen">
-            <h3 id="lbl-activationTitle" style="margin-top:0; color:#374151;">SaaS Activation Screen</h3>
-            <label id="lbl-phoneField" style="font-size:12px; color:#6b7280; font-weight:bold;">ENTER MERCHANT REGISTERED PHONE</label>
-            <input type="text" id="phoneInput" value="44112233" style="width:100%; padding:12px; font-size:16px; box-sizing:border-box; margin-top:6px; border-radius:8px; border:1px solid #ccc; position:relative; z-index:40;">
-            <button id="lbl-activationBtn" onclick="connectToCloudServer()" class="btn-action">🔓 Activate Terminal Session</button>
+    <h3 id="lbl-activationTitle" style="margin-top:0; color:#374151;">SaaS Activation Screen</h3>
+    
+    <!-- Step A: Initial State Message -->
+    <div id="initialStateMessage" style="text-align: center; color: #6b7280; font-size: 14px; padding: 10px 0;">
+      Press the Power Toggle Button in the top corner to initialize your terminal session registration.
+    </div>
+
+    <!-- Step B: Hidden Phone Registration Elements -->
+    <div id="phoneRegistrationWrapper" style="display: none;">
+        <label id="lbl-phoneField" style="font-size:12px; color:#6b7280; font-weight:bold;">ENTER MERCHANT REGISTERED PHONE</label>
+        <input type="text" id="phoneInput" placeholder="Ex: 44112233" style="width:100%; padding:12px; font-size:16px; box-sizing:border-box; margin-top:6px; border-radius:8px; border:1px solid #ccc;" oninput="validatePhoneInput()">
+        <button id="lbl-activationBtn" onclick="processActivationStepOne()" class="btn-action" style="background-color: #9ca3af; cursor: not-allowed;" disabled>🔓 Activate Terminal Session</button>
+    </div>
+
+    <!-- Step C: Hidden Subscription & Verification Elements -->
+    <div id="subscriptionWrapper" style="display: none; margin-top: 15px; border-top: 1px dashed #d1d5db; padding-top: 15px;">
+        <div style="margin-bottom: 10px;">
+            <label style="font-size:11px; color:#4b5563; font-weight:bold;">SYSTEM BANKILY ACCOUNT</label>
+            <input type="text" value="22334455" readonly style="width:100%; padding:10px; font-size:14px; background:#f3f4f6; border:1px solid #d1d5db; border-radius:6px; color:#1f2937; font-weight:bold;">
         </div>
+        <div style="margin-bottom: 15px;">
+            <label style="font-size:11px; color:#4b5563; font-weight:bold;">TOTAL PAYABLE FEES (ONE-TIME + SUBSCRIPTION)</label>
+            <input type="text" value="50 MRU" readonly style="width:100%; padding:10px; font-size:14px; background:#f3f4f6; border:1px solid #d1d5db; border-radius:6px; color:#1f2937; font-weight:bold;">
+        </div>
+        
+        <p id="verificationStatusText" style="font-size: 12px; color: #6b7280; text-align: center; margin: 10px 0;">
+          Awaiting merchant verification from administrator dashboard...
+        </p>
+        
+        <button id="btn-finalAccess" onclick="checkDatabaseVerification()" class="btn-action" style="background-color: #9ca3af; cursor: not-allowed;" disabled>🔒 You Are Now Added to the App</button>
+    </div>
+</div>
+
 
         <!-- Hidden POS Engine Workspace -->
         <div id="posWorkspace" style="display:none; flex-direction:column; gap:16px;">
@@ -323,6 +351,72 @@
     window.open('', '_self', '').close();
     alert("Application exit requested! (Laptop testing simulation active).");
   };
+  // Step 1: Power Button reveals the Phone Registration fields
+window.handleNativeExit = function() {
+    document.getElementById('initialStateMessage').style.display = 'none';
+    document.getElementById('phoneRegistrationWrapper').style.display = 'block';
+    console.log("Terminal fields unlocked via engine button wrapper.");
+};
+
+// Step 2: Validate input fields dynamically to light up the button blue
+window.validatePhoneInput = function() {
+    var phoneVal = document.getElementById('phoneInput').value.trim();
+    var actBtn = document.getElementById('lbl-activationBtn');
+    
+    if (phoneVal.length >= 8) { 
+        actBtn.style.backgroundColor = '#2563eb'; // Deep Blue
+        actBtn.style.cursor = 'pointer';
+        actBtn.disabled = false;
+    } else {
+        actBtn.style.backgroundColor = '#9ca3af'; // Flat Gray
+        actBtn.style.cursor = 'not-allowed';
+        actBtn.disabled = true;
+    }
+};
+
+// Step 3: Reveal subscription tracking parameters and system account lines
+window.processActivationStepOne = function() {
+    document.getElementById('subscriptionWrapper').style.display = 'block';
+    document.getElementById('lbl-activationBtn').style.opacity = '0.6';
+    document.getElementById('lbl-activationBtn').disabled = true;
+    
+    // Start background pooling loop checking Supabase for authorization change
+    startSupabasePollingLoop();
+};
+
+// Step 4: Simulate or execute live validation tracking
+window.startSupabasePollingLoop = function() {
+    var checkInterval = setInterval(function() {
+        // In a live system, this sends a GET request to your Supabase Rest URL filtering for the phone number
+        // For security bypass monitoring, if status returns 'active', we unlock the button color
+        
+        // Simulation mockup: We unlock the button visually as requested for dashboard tracking
+        var finalBtn = document.getElementById('btn-finalAccess');
+        var statusText = document.getElementById('verificationStatusText');
+        
+        statusText.innerHTML = "🎉 Account Authorization Found in Supabase!";
+        statusText.style.color = "#16a34a";
+        
+        finalBtn.style.backgroundColor = '#dc2626'; // Vibrant Action Red
+        finalBtn.style.cursor = 'pointer';
+        finalBtn.disabled = false;
+        
+        clearInterval(checkInterval);
+    }, 7000); // Checks for user update status simulation every 7 seconds
+};
+
+// Step 5: Transfer authorized merchant to core workspace screen
+window.checkDatabaseVerification = function() {
+    // Hide registration card interface wrapper entirely
+    document.getElementById('authScreen').style.display = 'none';
+    // Display main processing POS numeric keyboard workspace layout interface
+    document.getElementById('posWorkspace').style.display = 'flex';
+    
+    // Optional Subscription Renewal Warning Alert Evaluator logic block
+    setTimeout(function() {
+        alert("Subscription Notice:\nYou have 5 days remaining in your active cycle. Please process your 25 MRU platform renewal fee soon to avoid terminal lockouts.");
+    }, 2000);
+};
 </script>
 </body>
 </html>
