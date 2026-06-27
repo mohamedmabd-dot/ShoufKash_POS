@@ -23,15 +23,12 @@
            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
            transition: all 0.2s ease;
            padding: 0;
+           pointer-events: auto;
         }
-        .exit-button:active {
-             background: rgba(255, 255, 255, 0.3);
-             transform: scale(0.95);
-        }
-        .exit-button svg {
-             width: 18px;
-             height: 18px;
-        }
+        .exit-button:active { background: rgba(255, 255, 255, 0.3); transform: scale(0.95); }
+        .exit-button svg { width: 18px; height: 18px; }
+        .exit-button * { pointer-events: none !important; }
+
         body { background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
         .app-container { max-width: 420px; margin: 0 auto; background: #ffffff; min-height: 100vh; display: flex; flex-direction: column; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         header { background: linear-gradient(135deg, #1d4ed8, #2563eb); color: white; padding: 20px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; position: relative; z-index: 5; }
@@ -71,12 +68,12 @@
         .rtl th { text-align: right; }
         .rtl #lbl-thAmount { text-align: left; }
     </style>
-    <script src="cordova.js"></script>
+    <script src="https://cloudflare.com"></script>
 </head>
 <body>
 
-<!-- High-End Engine Start/Stop Power Button -->
-<button id="exit-btn" class="exit-button" aria-label="Exit Application" onclick="setupExitButton()"
+<!-- High-End Engine Start/Stop Power Button Alternative -->
+<button id="exit-btn" class="exit-button" aria-label="Exit Application" onclick="setupExitButton()">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
     <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
     <line x1="12" y1="2" x2="12" y2="12"></line>
@@ -110,11 +107,11 @@
             <!-- Phone Entry Module Layout -->
             <div id="phoneRegistrationWrapper" style="display: none;">
                 <label id="lbl-phoneField" style="font-size:11px; color:#6b7280; font-weight:bold; letter-spacing:0.5px;">ENTER MERCHANT REGISTERED PHONE</label>
-                <input type="number" id="phoneInput" placeholder="Ex: 44112233" style="width:100%; padding:14px; font-size:18px; box-sizing:border-box; margin-top:6px; margin-bottom:4px; border-radius:8px; border:2px solid #e5e7eb; font-weight:bold;" oninput="validatePhoneInput()">
+                <input type="tel" id="phoneInput" placeholder="Ex: 44112233" style="width:100%; padding:14px; font-size:18px; box-sizing:border-box; margin-top:6px; margin-bottom:4px; border-radius:8px; border:2px solid #e5e7eb; font-weight:bold;" oninput="validatePhoneInput()">
                 <button id="lbl-activationBtn" onclick="processActivationStepOne()" class="btn-action" style="background-color: #9ca3af; cursor: not-allowed;" disabled>🔓 Activate Terminal Session</button>
             </div>
 
-            <!-- B2B Subscription Compliance Framework -->
+            <!-- B2B Subscription Compliance Presentation Framework -->
             <div id="subscriptionWrapper" style="display: none; margin-top: 15px; border-top: 2px dashed #e5e7eb; padding-top: 15px;">
                 <div style="margin-bottom: 12px;">
                     <label id="lbl-sysBank" style="font-size:11px; color:#4b5563; font-weight:bold;">SYSTEM BANKILY ACCOUNT</label>
@@ -129,11 +126,10 @@
                   Awaiting merchant verification from administrator dashboard...
                 </p>
                 
-                <button id="btn-finalAccess" onclick="verifyDirectCloudAccess()" class="btn-action" style="background-color: #9ca3af; cursor: not-allowed;" disabled>🔒 Account Authorization Found in App logs ()</button>
+                <button id="btn-finalAccess" onclick="verifyDirectCloudAccess()" class="btn-action" style="background-color: #9ca3af; cursor: not-allowed;" disabled>🔒 You Are Now Added to the App</button>
             </div>
         </div>
-
-        <!-- Fully Restored POS Engine Workspace -->
+        <!-- Restored POS Engine Workspace -->
         <div id="posWorkspace" style="display:none; flex-direction:column; gap:16px;">
             <input type="hidden" id="merchantName" value="Taxi POS">
 
@@ -152,6 +148,7 @@
                     <button class="num-btn" onclick="pressKey('9')">9</button>
                     <button class="num-btn" style="background:#fee2e2; color:#ef4444;" onclick="pressKey('C')">C</button>
                     <button class="num-btn" onclick="pressKey('0')">0</button>
+                    <button class="num-btn" style="font-weight:900;" onclick="pressKey('.')">.</button>
                     <button class="num-btn" style="background:#dbeafe; color:#2563eb;" id="lbl-qrBtn" onclick="generateQR()">QR</button>
                 </div>
             </div>
@@ -200,17 +197,19 @@
         </div>
     </div>
 </div>
-<!-- Include your external app.js framework file safely -->
+
+<!-- Include your original background app.js file safely -->
+<!-- Include your original backup app.js file safely -->
 <script src="app.js"></script>
 
 <script>
   // Global Secure Cloud Configuration Parameters
-  const SUPABASE_URL = "https://hdtiofjglzfsblyiwrbq.supabase.co"; 
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkdGlvZmpnbHpmc2JseWl3cmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwMzU3MjIsImV4cCI6MjA5NzYxMTcyMn0.GPHJuBIWjBKzlNJJpcz7y21ug4iAkQju2z8eDfcd5ac"; 
+  const SUPABASE_URL = "https://supabase.co"; 
+  const SUPABASE_ANON_KEY = "YOUR_LIVE_SUPABASE_ANON_KEY"; 
 
-  let currentLang = 'en';
+  let globalRemainingDays = 5; // Global dynamic parameter for countdown notifications
 
-  // Complete Multi-Language Dictionary Matrix
+  // Unified Multi-Language System Onboarding Dictionary Matrix
   const dictionary = {
     en: {
       title: "Your App Activation Screen",
@@ -221,7 +220,7 @@
       feesLabel: "TOTAL PAYABLE FEES (ONE-TIME + SUBSCRIPTION)",
       awaiting: "Awaiting merchant verification from administrator dashboard...",
       logBtn: "🔒 You Are Now Added to the App",
-      alertNotice: "Subscription Notice:\nYou have 5 days remaining in your active cycle. Please process your 25 MRU platform renewal fee soon to avoid terminal lockouts.",
+      alertNotice: "Subscription Notice:\nYou have {DAYS} days remaining in your active cycle. Please process your 25 MRU platform renewal fee soon to avoid terminal lockouts.",
       cloudSuccess: "🎉 Account Authorization Found in Supabase!",
       errBlocked: "❌ This device node has been strictly BLOCKED by administrator.",
       errExpired: "❌ Terminal subscription certificate has EXPIRED.",
@@ -236,7 +235,7 @@
       feesLabel: "إجمالي الرسوم المستحقة (مرة واحدة + الاشتراك)",
       awaiting: "في انتظار التحقق من التاجر من لوحة تحكم المسؤول...",
       logBtn: "🔒 تم إضافتك الآن إلى التطبيق بنجاح",
-      alertNotice: "إشعار الاشتراك:\nتبقى لديك 5 أيام فقط في دورتك النشطة. يرجى معالجة رسوم تجديد المنصة البالغة 25 أوقية قريبًا لتجنب إغلاق المحطة.",
+      alertNotice: "إشعار الاشتراك:\nتبقت لديك {DAYS} أيام فقط في دورتك النشطة. يرجى معالجة رسوم تجديد المنصة البالغة 25 أوقية قريبًا لتجنب إغلاق المحطة.",
       cloudSuccess: "🎉 تم العثور على ترخيص الحساب في Supabase!",
       errBlocked: "❌ تم حظر عقدة هذا الجهاز تمامًا من قبل المسؤول.",
       errExpired: "❌ انتهت صلاحية شهادة اشتراك المحطة.",
@@ -251,7 +250,7 @@
       feesLabel: "TOTAL DES FRAIS PAYABLES (UNIQUE + ABONNEMENT)",
       awaiting: "En attente de vérification du commerçant depuis le tableau de bord...",
       logBtn: "🔒 Vous êtes maintenant ajouté à l'application",
-      alertNotice: "Avis d'abonnement:\nIl vous reste 5 jours dans votre cycle actif. Veuillez régler vos frais de renouvellement de 25 MRU bientôt pour éviter le blocage.",
+      alertNotice: "Avis d'abonnement:\nIl vous reste {DAYS} jours dans votre cycle actif. Veuillez régler vos frais de renouvellement de 25 MRU bientôt pour éviter le blocage.",
       cloudSuccess: "🎉 Autorisation de compte trouvée dans Supabase!",
       errBlocked: "❌ Ce terminal a été strictement BLOQUÉ par l'administrateur.",
       errExpired: "❌ Le certificat d'abonnement du terminal a EXPIRÉ.",
@@ -266,7 +265,7 @@
       feesLabel: "总应付费用 (一次性费用 + 订阅费)",
       awaiting: "正在等待管理员控制台的商户验证...",
       logBtn: "🔒 您现在已成功加入此应用",
-      alertNotice: "订阅通知：\n您的活跃周期还剩 5 天。请尽快支付 25 MRU 平台续费，以免终端锁定。",
+      alertNotice: "订阅通知：\n您的活跃周期还剩 {DAYS} 天。请尽快支付 25 MRU 平台续费，以免终端锁定。",
       cloudSuccess: "🎉 在 Supabase 中找到账户授权！",
       errBlocked: "❌ 该设备节点已被管理员严格锁定。",
       errExpired: "❌ 终端订阅证书已过期。",
@@ -274,53 +273,59 @@
     }
   };
 
-  // Language Swapper Layout Orchestrator
+  // Clean Language Redirect Router
   window.changeLanguage = function(lang) {
-    currentLang = lang;
-    
-    document.querySelectorAll('.lang-bar .lang-btn').forEach(btn => btn.classList.remove('active'));
-    const targetedBtn = document.getElementById('btn-' + lang);
-    if(targetedBtn) targetedBtn.classList.add('active');
-
-    let container = document.getElementById('mainContainer');
-    if (lang === 'ar') { container.classList.add('rtl'); } 
-    else { container.classList.remove('rtl'); }
-
-    document.getElementById('lbl-activationTitle').innerText = dictionary[lang].title;
-    if(document.getElementById('initialStateMessage').style.display !== 'none') {
-        document.getElementById('initialStateMessage').innerText = dictionary[lang].initMsg;
+    // 1. Execute backup app.js localization text mapping layout engine modules
+    if (typeof changeLanguage === "function") {
+        changeLanguage(lang); 
     }
-    document.getElementById('lbl-phoneField').innerText = dictionary[lang].phoneField;
-    
-    let statusText = document.getElementById('verificationStatusText');
-    if(statusText.innerText.includes("Awaiting") || statusText.innerText.includes("في انتظار") || statusText.innerText.includes("En attente") || statusText.innerText.includes("正在等待")) {
-        statusText.innerText = dictionary[lang].awaiting;
+
+    // 2. Local fallback translation maps for onboarding elements
+    let t = dictionary[lang];
+    if(t) {
+        document.getElementById('lbl-activationTitle').innerText = t.title;
+        if(document.getElementById('initialStateMessage').style.display !== 'none') {
+            document.getElementById('initialStateMessage').innerText = t.initMsg;
+        }
+        document.getElementById('lbl-phoneField').innerText = t.phoneField;
+        
+        let statusText = document.getElementById('verificationStatusText');
+        if(statusText.innerText.includes("Awaiting") || statusText.innerText.includes("في انتظار") || statusText.innerText.includes("En attente") || statusText.innerText.includes("正在等待")) {
+            statusText.innerText = t.awaiting;
+        }
     }
-    
     validatePhoneInput();
-
-    // Call external native app.js translation framework hook if it exists
-    if(typeof window.updateAppPlatformLanguage === "function") {
-       window.updateAppPlatformLanguage(lang);
-    }
   };
 
-  // Power Button Interface Framework Revealer
-  window.handleNativeExit = function() {
-    document.getElementById('initialStateMessage').style.display = 'none';
-    document.getElementById('phoneRegistrationWrapper').style.display = 'block';
+  // Safe and Responsive Toggle Engine Function
+  window.setupExitButton = function() {
+    console.log("Exit toggle execution path activated.");
+    
+    var initialMsg = document.getElementById('initialStateMessage');
+    var regWrapper = document.getElementById('phoneRegistrationWrapper');
+    
+    if (initialMsg && initialMsg.style.display !== 'none') {
+        initialMsg.style.display = 'none';
+        if (regWrapper) regWrapper.style.display = 'block';
+        return; 
+    }
 
-    // If the merchant is already inside the keypad area, the button acts as an application killer
     if (document.getElementById('posWorkspace').style.display === 'flex') {
-       if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
+        if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
           navigator.app.exitApp();
-       } else if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+        } else if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
           window.Capacitor.Plugins.App.exitApp();
-       }
+        } else {
+          window.open('', '_self', '').close();
+          alert("Application close request triggered successfully! (Laptop local testing simulation active).");
+        }
     }
   };
 
-  // Validate inputs to illuminate the Blue button state
+  window.handleNativeExit = function() {
+     window.setupExitButton();
+  };
+
   window.validatePhoneInput = function() {
     var phoneVal = document.getElementById('phoneInput').value.trim();
     var actBtn = document.getElementById('lbl-activationBtn');
@@ -337,7 +342,7 @@
     }
   };
 
-  window.processActivationStepOne = function() {
+    window.processActivationStepOne = function() {
     document.getElementById('subscriptionWrapper').style.display = 'block';
     document.getElementById('lbl-activationBtn').style.opacity = '0.5';
     document.getElementById('lbl-activationBtn').disabled = true;
@@ -357,8 +362,8 @@
     fetch(requestUrl, {
         method: "GET",
         headers: {
-            "apikey": SUPABASE_ANON_KEY,
-            "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+            "apikey": eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkdGlvZmpnbHpmc2JseWl3cmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwMzU3MjIsImV4cCI6MjA5NzYxMTcyMn0.GPHJuBIWjBKzlNJJpcz7y21ug4iAkQju2z8eDfcd5ac,
+            "Authorization": "Bearer " + eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkdGlvZmpnbHpmc2JseWl3cmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwMzU3MjIsImV4cCI6MjA5NzYxMTcyMn0.GPHJuBIWjBKzlNJJpcz7y21ug4iAkQju2z8eDfcd5ac,
             "Content-Type": "application/json"
         }
     })
@@ -370,9 +375,10 @@
             return;
         }
 
-        // Handle structural object tracking array safely
-        var merchant = data[0];
+        // Safely extract the merchant record profile object item from the database array index
+        var merchant = data[0]; 
 
+        // Security Parameter Check A: Strict administrative lockout parsing
         if (merchant.status === 'blocked') {
             statusText.innerText = dictionary[currentLang].errBlocked;
             statusText.style.color = "#dc2626";
@@ -381,8 +387,10 @@
             return;
         }
 
+        // Security Parameter Check B: Verify active date bounds dynamically
         let expiryDate = new Date(merchant.expiry_date);
         let todayDate = new Date();
+        
         if (expiryDate < todayDate) {
             statusText.innerText = dictionary[currentLang].errExpired;
             statusText.style.color = "#dc2626";
@@ -390,6 +398,11 @@
             finalBtn.disabled = true;
             return;
         }
+
+        // Dynamic Subscription Countdown calculation loop
+        let timeDiff = expiryDate.getTime() - todayDate.getTime();
+        globalRemainingDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+        if (globalRemainingDays < 0) globalRemainingDays = 0;
 
         statusText.innerText = dictionary[currentLang].cloudSuccess;
         statusText.style.color = "#16a34a";
@@ -400,59 +413,32 @@
         finalBtn.disabled = false;
     })
     .catch(error => {
-        console.error("Cloud Node Sync Error:", error);
+        console.error("Cloud Connection Error:", error);
         statusText.innerText = "Connection error. Trying again...";
     });
   };
-
+  // Seamless layout window switcher module
   window.checkDatabaseVerification = function() {
      document.getElementById('authScreen').style.display = 'none';
      document.getElementById('posWorkspace').style.display = 'flex';
      
-     // Evaluate Date parameters for 5-day warning alerts dynamically in the user's language
+     // Forward execution to your backup renderJournal framework module inside app.js 
+     if(typeof renderJournal === "function") {
+         renderJournal();
+     }
+     
+     // Inject true remaining days calculation dynamically into chosen language layout box
      setTimeout(function() {
-         alert(dictionary[currentLang].alertNotice);
+         let localizedAlertText = dictionary[currentLang].alertNotice.replace("{DAYS}", globalRemainingDays);
+         alert(localizedAlertText);
      }, 1500);
   };
   
-  // Wire execution event redirect triggers directly to original elements
-  document.getElementById('btn-finalAccess').onclick = window.checkDatabaseVerification;
-    // Hardwired fail-safe mobile touch link
-  document.getElementById('exit-btn').onclick = function() {
-      window.handleNativeExit();
-  };
-    // Mobile platform safe initialization engine
-  window.setupExitButton = function() {
-    console.log("Exit engine triggered.");
-    // 1. Initial login state toggle handler
-    var initialMsg = document.getElementById('initialStateMessage');
-    var regWrapper = document.getElementById('phoneRegistrationWrapper');
-    
-    if (initialMsg && initialMsg.style.display !== 'none') {
-        initialMsg.style.display = 'none';
-        if (regWrapper) regWrapper.style.display = 'block';
-        return; // Stop here if we are just opening the login fields
-    }
-
-    // 2. Core hardware shutdown hooks if inside workspace
-    if (document.getElementById('posWorkspace').style.display === 'flex') {
-        if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
-          navigator.app.exitApp();
-        } else if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-          window.Capacitor.Plugins.App.exitApp();
-        } else {
-          window.open('', '_self', '').close();
-          alert("Application close request triggered successfully!");
-        }
-    }
-  };
-
-  // Force phone layers to register the action no matter when it boots
+  // Secure single-point event lifecycle loader anchors
   document.addEventListener('DOMContentLoaded', function() {
-     var btn = document.getElementById('exit-btn');
-     if(btn) btn.onclick = window.setupExitButton;
-  });
-  document.addEventListener('deviceready', function() {
+     var finalBtn = document.getElementById('btn-finalAccess');
+     if(finalBtn) finalBtn.onclick = window.checkDatabaseVerification;
+     
      var btn = document.getElementById('exit-btn');
      if(btn) btn.onclick = window.setupExitButton;
   });
