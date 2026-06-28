@@ -91,7 +91,8 @@
         <button class="lang-btn" id="btn-ar" onclick="changeLanguage('ar')">العربية</button>
         <button class="lang-btn" id="btn-fr" onclick="changeLanguage('fr')">Français</button>
         <button class="lang-btn" id="btn-zh" onclick="changeLanguage('zh')">中文</button>
-    </div>
+    </div> 
+    <audio id="blockedBuzzer" src="payment_success.wav"></audio>
 
     <div class="content">
         <!-- Unified Secure App Activation Card -->
@@ -186,8 +187,7 @@
                         <!-- Dynamic transaction rows injected here -->
                     </tbody>
                 </table>
-
-                <!-- Action Button Row for Management -->
+                <!-- Restored Slim Rectangular Bookkeeping Row -->
                 <div class="journal-actions">
                     <button class="btn-journal btn-copy" id="lbl-copyBtn" onclick="if(typeof copyJournalToClipboard === 'function') { copyJournalToClipboard(); } else { alert('Journal utility routing...'); }">📋 Copy Journal</button>
                     <button class="btn-journal btn-delete" id="lbl-clearBtn" onclick="if(typeof clearDailyHistory === 'function') { clearDailyHistory(); } else { alert('History deletion pipeline...'); }">🗑️ Clear History</button>
@@ -199,6 +199,7 @@
 
 <!-- Include your original background app.js file safely -->
 <!-- Include your original backup app.js file safely -->
+<!-- Include your original backup app.js file safely -->
 <script src="app.js"></script>
 
 <script>
@@ -206,9 +207,11 @@
   const SUPABASE_URL = "https://hdtiofjglzfsblyiwrbq.supabase.co"; 
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkdGlvZmpnbHpmc2JseWl3cmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwMzU3MjIsImV4cCI6MjA5NzYxMTcyMn0.GPHJuBIWjBKzlNJJpcz7y21ug4iAkQju2z8eDfcd5ac"; 
 
-  let globalRemainingDays = 5; // Global dynamic parameter for countdown notifications
+  currentLang = 'en';
+  let globalRemainingDays = 5; 
 
   // Unified Multi-Language System Onboarding Dictionary Matrix
+  // Complete Multi-Language Dictionary Matrix
   const dictionary = {
     en: {
       title: "Your App Activation Screen",
@@ -223,22 +226,28 @@
       cloudSuccess: "🎉 Account Authorization Found in Supabase!",
       errBlocked: "❌ This device node has been strictly BLOCKED by administrator.",
       errExpired: "❌ Terminal subscription certificate has EXPIRED.",
-      errNotFound: "❌ Phone registration index record not found in system."
+      errNotFound: "❌ Phone registration index record not found in system.",
+      qrBtnLabel: "QR",
+      copyBtn: "📋 Copy Journal",
+      clearBtn: "🗑️ Clear History"
     },
     ar: {
       title: "شاشة تفعيل تطبيقك",
       initMsg: "اضغط على زر التشغيل في الزاوية العلوية لبدء تسجيل جلسة المحطة الخاصة بك.",
       phoneField: "أدخل رقم الهاتف المسجل للتاجر",
-      actBtn: "🔓 تفعيل جلسة المحطة",
+      actBtn: "🔓 تفعيل جلسة العمل",
       bankLabel: "حساب بنكيلي الخاص بالنظام",
-      feesLabel: "إجمالي الرسوم المستحقة (مرة واحدة + الاشتراك)",
+      feesLabel: "إ جمالي الرسوم المستحقة (مرة واحدة + الاشتراك)",
       awaiting: "في انتظار التحقق من التاجر من لوحة تحكم المسؤول...",
       logBtn: "🔒 تم إضافتك الآن إلى التطبيق بنجاح",
-      alertNotice: "إشعار الاشتراك:\nتبقت لديك {DAYS} أيام فقط في دورتك النشطة. يرجى معالجة رسوم تجديد المنصة البالغة 25 أوقية قريبًا لتجنب إغلاق المحطة.",
-      cloudSuccess: "🎉 تم العثور على ترخيص الحساب في Supabase!",
+      alertNotice: "إشعار الاشتراك:\nتبقى لديك {DAYS} أيام فقط في دورتك النشطة. يرجى معالجة رسوم تجديد المنصة البالغة 25 أوقية قريبًا لتجنب إغلاق المحطة.",
+      cloudSuccess: "🎉 تم العثور على الترخيص الخاص بكم في النظام",
       errBlocked: "❌ تم حظر عقدة هذا الجهاز تمامًا من قبل المسؤول.",
-      errExpired: "❌ انتهت صلاحية شهادة اشتراك المحطة.",
-      errNotFound: "❌ لم يتم العثور على سجل رقم الهاتف في النظام."
+      errExpired: "❌ انتهت صلاحية صلاحية اشتراككم فى التطبيق.",
+      errNotFound: "❌ لم يتم العثور على سجل رقم الهاتف في النظام.",
+      qrBtnLabel: "رمز الدفع",
+      copyBtn: "📋 نسخ السجل",
+      clearBtn: "🗑️ مسح السجل"
     },
     fr: {
       title: "Votre Écran d'Activation de l'App",
@@ -253,7 +262,10 @@
       cloudSuccess: "🎉 Autorisation de compte trouvée dans Supabase!",
       errBlocked: "❌ Ce terminal a été strictement BLOQUÉ par l'administrateur.",
       errExpired: "❌ Le certificat d'abonnement du terminal a EXPIRÉ.",
-      errNotFound: "❌ Enregistrement du numéro de téléphone introuvable."
+      errNotFound: "❌ Enregistrement du numéro de téléphone introuvable.",
+      qrBtnLabel: "QR",
+      copyBtn: "📋 Copier le Journal",
+      clearBtn: "🗑️ Effacer l'Historique"
     },
     zh: {
       title: "您的应用激活界面",
@@ -268,16 +280,17 @@
       cloudSuccess: "🎉 在 Supabase 中找到账户授权！",
       errBlocked: "❌ 该设备节点已被管理员严格锁定。",
       errExpired: "❌ 终端订阅证书已过期。",
-      errNotFound: "❌ 系统中未找到手机注册记录。"
-    }
+      errNotFound: "❌ 系统中未找到手机注册记录。",
+      qrBtnLabel: "二维码",
+      copyBtn: "📋 复制日志",
+      clearBtn: "🗑️ 清除历史"
+    },
   };
-
-  // Clean Language Redirect Router
   // Fixed Global Language Switcher Router
+    // Fixed Global Language Switcher Router
   window.changeLanguage = function(lang) {
     currentLang = lang;
     
-    // 1. Update the onboarding visual screen fields locally
     let t = dictionary[lang];
     if(t) {
         document.getElementById('lbl-activationTitle').innerText = t.title;
@@ -292,7 +305,6 @@
         }
     }
     
-    // 2. Safely call your background app.js interface variables without looping
     let container = document.getElementById('mainContainer');
     if (lang === 'ar') { container.classList.add('rtl'); } else { container.classList.remove('rtl'); }
     
@@ -300,7 +312,6 @@
     const targetedBtn = document.getElementById('btn-' + lang);
     if(targetedBtn) targetedBtn.classList.add('active');
 
-    // 3. Inject the active text properties straight down into app.js translations
     if (typeof translations !== "undefined" && translations[lang]) {
         let appText = translations[lang];
         document.getElementById('titleBanner').innerText = appText.title;
@@ -313,43 +324,52 @@
         document.getElementById('lbl-txCount').innerText = appText.sales;
         document.getElementById('lbl-thTime').innerText = appText.thTime;
         document.getElementById('lbl-thAmount').innerText = appText.thAmount;
-        if (document.getElementById('lbl-copyBtn')) document.getElementById('lbl-copyBtn').innerText = appText.copyBtn;
-        if (document.getElementById('lbl-clearBtn')) document.getElementById('lbl-clearBtn').innerText = appText.clearBtn;
-        if (document.getElementById('btn-finalAccess')) document.getElementById('btn-finalAccess').innerText = "🔓 " + dictionary[lang].logBtn;
-        
-        // Refresh the calculator amount tracker window view size string
+        <!-- Secure Isolated Bookkeeping Control Wrapper Container -->
         document.getElementById('priceDisplay').innerText = (window.currentInput || "0") + " " + appText.mru;
     }
-    
-    if(typeof renderJournal === "function") {
-        renderJournal();
+        // Inject onboarding custom subscription layout text labels dynamically
+    if (document.getElementById('lbl-activationBtn')) document.getElementById('lbl-activationBtn').innerText = dictionary[lang].actBtn;
+    if (document.getElementById('lbl-sysBank')) document.getElementById('lbl-sysBank').innerText = dictionary[lang].bankLabel;
+    if (document.getElementById('lbl-totalFees')) document.getElementById('lbl-totalFees').innerText = dictionary[lang].feesLabel;
+    if (document.getElementById('lbl-qrBtn')) document.getElementById('lbl-qrBtn').innerText = dictionary[lang].qrBtnLabel;
+    if (document.getElementById('lbl-copyBtn')) document.getElementById('lbl-copyBtn').innerText = dictionary[lang].copyBtn || "📋 Copy Journal";
+    if (document.getElementById('lbl-clearBtn')) document.getElementById('lbl-clearBtn').innerText = dictionary[lang].clearBtn || "🗑️ Clear History";
+
+    // SAFE WRAPPER: Added the missing "if" block check here
+    if (document.getElementById('btn-finalAccess')) {
+        document.getElementById('btn-finalAccess').innerText = "🔓 " + dictionary[lang].logBtn;
     }
-    
+
+   // Bypasses the naming collision to run app.js safely
+    if (window.translations && typeof window.translations[lang] !== "undefined") {
+    if (typeof window.renderJournal === "function") { window.renderJournal(); }
+    }
+    if (typeof renderJournal === "function") { renderJournal(); }
     validatePhoneInput();
   };
-
-  // Safe and Responsive Toggle Engine Function
+  // Restored Instant Mobile Exit Sequence Engine
   window.setupExitButton = function() {
-    console.log("Exit toggle execution path activated.");
+    console.log("Instant native exit sequence initialized.");
     
-    var initialMsg = document.getElementById('initialStateMessage');
-    var regWrapper = document.getElementById('phoneRegistrationWrapper');
-    
-    if (initialMsg && initialMsg.style.display !== 'none') {
-        initialMsg.style.display = 'none';
-        if (regWrapper) regWrapper.style.display = 'block';
-        return; 
-    }
-
     if (document.getElementById('posWorkspace').style.display === 'flex') {
         if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
           navigator.app.exitApp();
+          return;
         } else if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
           window.Capacitor.Plugins.App.exitApp();
+          return;
         } else {
           window.open('', '_self', '').close();
-          alert("Application close request triggered successfully! (Laptop local testing simulation active).");
+          alert("Application close request triggered successfully!");
+          return;
         }
+    }
+
+    var initialMsg = document.getElementById('initialStateMessage');
+    var regWrapper = document.getElementById('phoneRegistrationWrapper');
+    if (initialMsg && initialMsg.style.display !== 'none') {
+        initialMsg.style.display = 'none';
+        if (regWrapper) regWrapper.style.display = 'block';
     }
   };
 
@@ -373,7 +393,7 @@
     }
   };
 
-    window.processActivationStepOne = function() {
+  window.processActivationStepOne = function() {
     document.getElementById('subscriptionWrapper').style.display = 'block';
     document.getElementById('lbl-activationBtn').style.opacity = '0.5';
     document.getElementById('lbl-activationBtn').disabled = true;
@@ -381,8 +401,6 @@
     
     setTimeout(verifyDirectCloudAccess, 2000);
   };
-
-  // Live Supabase Fetch Verification Loop
   window.verifyDirectCloudAccess = function() {
     var userPhone = document.getElementById('phoneInput').value.trim();
     var statusText = document.getElementById('verificationStatusText');
@@ -398,7 +416,7 @@
             "Content-Type": "application/json"
         }
     })
-        .then(response => response.json())
+    .then(response => response.json())
     .then(data => {
         if (!data || data.length === 0) {
             statusText.innerText = dictionary[currentLang].errNotFound;
@@ -406,16 +424,29 @@
             return;
         }
 
-        // STEP 1: DECLARED FIRST - Extract the raw row data object out of the array list envelope
         var merchant = (data && data.length > 0) ? data[0] : null; 
 
-        // STEP 2: CHECKED SECOND - Analyze the clean lowercase text inside your subscription_status column cell
         if (merchant && merchant.subscription_status) {
             var cleanStatus = merchant.subscription_status.toString().trim().toLowerCase();
             
             if (cleanStatus === 'blocked') {
                 statusText.innerText = dictionary[currentLang].errBlocked;
                 statusText.style.color = "#dc2626";
+                
+                // Clear background chime collisions and fire low harsh alarm tones natively
+                try {
+                    var crashCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    var osc1 = crashCtx.createOscillator();
+                    var gain1 = crashCtx.createGain();
+                    osc1.connect(gain1);
+                    gain1.connect(crashCtx.destination);
+                    osc1.type = 'sawtooth';
+                    osc1.frequency.setValueAtTime(110.00, crashCtx.currentTime); // Low warning drone
+                    gain1.gain.setValueAtTime(0.25, crashCtx.currentTime);
+                    osc1.start();
+                    gain1.gain.exponentialRampToValueAtTime(0.00001, crashCtx.currentTime + 0.4);
+                    osc1.stop(crashCtx.currentTime + 0.4);
+                } catch(e) { console.log("Buzzer alert executed."); }
                 
                 finalBtn.style.backgroundColor = '#9ca3af';
                 finalBtn.style.cursor = 'not-allowed';
@@ -425,55 +456,17 @@
             }
         }
 
-        // STEP 3: PROCESSED THIRD - Run calendar calculations safely now that the object is fully loaded
         let expiryDate = new Date(merchant.expiry_date);
         let todayDate = new Date();
         
         if (expiryDate < todayDate) {
             statusText.innerText = dictionary[currentLang].errExpired;
             statusText.style.color = "#dc2626";
-        // FEATURE ADDITION: Play a harsh, unpleasant double-buzz error alarm tone natively
-       try {
-           var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-           
-           function playBuzz(delay) {
-               var osc = audioCtx.createOscillator();
-               var gain = audioCtx.createGain();
-               osc.connect(gain);
-               gain.connect(audioCtx.destination);
-               osc.type = 'sawtooth'; // Sawtooth wave makes a harsh, buzzer sound
-               osc.frequency.setValueAtTime(130.81, audioCtx.currentTime + delay); // Low frequency C3 buzz
-               gain.gain.setValueAtTime(0.2, audioCtx.currentTime + delay);
-               osc.start(audioCtx.currentTime + delay);
-               gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + delay + 0.25);
-               osc.stop(audioCtx.currentTime + delay + 0.25);
-           }
-           
-           playBuzz(0);      // First sharp buzz
-           playBuzz(0.35);   // Second sharp buzz
-       } catch(e) { console.log("Error alarm buzzer initialized."); }
-
-            // Play native high-pitched welcome audio confirmation tone
-try {
-    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    var oscillator = audioCtx.createOscillator();
-    var gainNode = audioCtx.createGain();
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Crisp welcome chirp
-    gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
-    oscillator.start();
-    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
-    oscillator.stop(audioCtx.currentTime + 0.3);
-} catch(e) { console.log("Welcome chime initialized."); }
-
             finalBtn.style.backgroundColor = '#9ca3af';
             finalBtn.disabled = true;
             return;
         }
 
-        // Dynamic Subscription Countdown calculation loop
         let timeDiff = expiryDate.getTime() - todayDate.getTime();
         globalRemainingDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
         if (globalRemainingDays < 0) globalRemainingDays = 0;
@@ -481,81 +474,44 @@ try {
         statusText.innerText = dictionary[currentLang].cloudSuccess;
         statusText.style.color = "#16a34a";
         
+        // Success Welcome audio chime confirmation
+        try {
+            var welcomeCtx = new (window.AudioContext || window.webkitAudioContext)();
+            var osc2 = welcomeCtx.createOscillator();
+            var gain2 = welcomeCtx.createGain();
+            osc2.connect(gain2);
+            gain2.connect(welcomeCtx.destination);
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(880.00, welcomeCtx.currentTime); // High pleasant note
+            gain2.gain.setValueAtTime(0.15, welcomeCtx.currentTime);
+            osc2.start();
+            gain2.gain.exponentialRampToValueAtTime(0.00001, welcomeCtx.currentTime + 0.25);
+            osc2.stop(welcomeCtx.currentTime + 0.25);
+        } catch(e) { console.log("Welcome chime run."); }
+
         finalBtn.innerText = "🔓 " + dictionary[currentLang].logBtn;
         finalBtn.style.backgroundColor = '#22c55e'; 
         finalBtn.style.cursor = 'pointer';
         finalBtn.disabled = false;
+        
+        if (document.getElementById('btn-finalAccess')) {
+            document.getElementById('btn-finalAccess').innerText = "🔓 " + dictionary[currentLang].logBtn;
+        }
     })
     .catch(error => {
         console.error("Cloud Connection Error:", error);
         statusText.innerText = "Connection error. Trying again...";
     });
   };
-  // Seamless layout window switcher module
-    // Secure Fallback Clipboard Engine for Laptop & Mobile WebViews
-  window.copyJournalToClipboard = function() {
-    const rows = document.querySelectorAll("#ledgerBody tr");
-    if(rows.length === 0 || (rows[0] && rows[0].innerText.includes("empty"))) {
-        alert("Journal is empty");
-        return;
-    }
 
-    const today = new Date();
-    const dateStr = today.getDate().toString().padStart(2, '0') + '/' + (today.getMonth() + 1).toString().padStart(2, '0') + '/' + today.getFullYear();
-    let reportText = `--- ShoufKash POS Journal ---\n📅 Date: ${dateStr}\n`;
-    rows.forEach(row => {
-        if(row.cells.length >= 2) {
-            const time = row.cells[0].innerText;
-            const amount = row.cells[1].innerText;
-            reportText += `🕒 ${time} -> 💰 ${amount}\n`;
-        }
-    });
-    
-    const totalRev = document.getElementById("revenueField").innerText;
-    const totalCount = document.getElementById("countField").innerText;
-    reportText += `----------------------------\n📊 Total Rev: ${totalRev}\n🔢 Total Tx: ${totalCount}`;
-
-    // Create an invisible, temporary input box to force clipboards to accept the text
-    const textArea = document.createElement("textarea");
-    textArea.value = reportText;
-    textArea.style.position = "fixed";
-    textArea.style.opacity = "0";
-    document.body.appendChild(textArea);
-    textArea.select();
-    textArea.setSelectionRange(0, 99999); // Safe selector range configuration for mobile screens
-    
-    try {
-        document.execCommand('copy');
-        alert("Journal logs copied to clipboard!");
-    } catch (err) {
-        console.error('Android clipboard fallback failure: ', err);
-    }
-    document.body.removeChild(textArea);
-  };
-
-  // Safe History Eraser Interceptor
-  window.clearDailyHistory = function() {
-    if (confirm("Are you sure you want to clear today's transaction history?")) {
-        // Clear screen elements instantly
-        document.getElementById("ledgerBody").innerHTML = `<tr><td colspan="2" align="center" style="color:#9ca3af; padding:15px; font-size:12px;">Journal empty</td></tr>`;
-        document.getElementById("revenueField").innerText = "0 MRU";
-        document.getElementById("countField").innerText = "0";
-        
-        // Trigger your background app.js local storage cleanup event loop safely
-        window.dispatchEvent(new CustomEvent('clearPOSLocalStorage'));
-        alert("Local transaction journal history cleared.");
-    }
-  };
   window.checkDatabaseVerification = function() {
      document.getElementById('authScreen').style.display = 'none';
      document.getElementById('posWorkspace').style.display = 'flex';
      
-     // Forward execution to your backup renderJournal framework module inside app.js 
      if(typeof renderJournal === "function") {
          renderJournal();
      }
      
-     // Inject true remaining days calculation dynamically into chosen language layout box
      setTimeout(function() {
          let localizedAlertText = dictionary[currentLang].alertNotice.replace("{DAYS}", globalRemainingDays);
          alert(localizedAlertText);
@@ -563,31 +519,74 @@ try {
   };
   
   // Secure single-point event lifecycle loader anchors
-    // Fully reactive single-point event event lifecycle loader
+  // Fully reactive single-point event lifecycle loader anchors
   document.addEventListener('DOMContentLoaded', function() {
-     // Hardwire secondary screen gateway switch click triggers safely
      var finalBtn = document.getElementById('btn-finalAccess');
      if(finalBtn) finalBtn.onclick = window.checkDatabaseVerification;
      
-     var exitBtn = document.getElementById('exit-btn');
-     if(exitBtn) exitBtn.onclick = window.setupExitButton;
+     var btn = document.getElementById('exit-btn');
+     if(btn) btn.onclick = window.setupExitButton;
 
-     // Hardwire management utility copy and clear loops directly back to app.js contexts
-     var copyBtn = document.getElementById('lbl-copyBtn');
-     if(copyBtn && typeof copyJournalToClipboard === "function") {
-         copyBtn.onclick = copyJournalToClipboard;
+     // HARDWIRED COPY LOGIC: Safely pulls data arrays from cell indexes cleanly
+     var cp = document.getElementById('lbl-copyBtn');
+     if(cp) {
+         cp.onclick = function() {
+             const rows = document.querySelectorAll('#ledgerBody tr');
+             // Fast look-ahead guard to confirm rows are populated
+             if(rows.length === 0 || (rows[0] && rows[0].innerText.includes('empty'))) { 
+                 alert('Journal is empty'); 
+                 return;
+             }
+             
+            const today = new Date(); 
+             const dateStr = today.getDate().toString().padStart(2, '0') + '/' + (today.getMonth() + 1).toString().padStart(2, '0') + '/' + today.getFullYear(); 
+             
+             // Dynamic Multilingual Clipboard Report Matrix Header Maps
+             let reportHeader = currentLang === 'ar' ? `--- سجل العمليات اليومية ---` : (currentLang === 'fr' ? `--- JOURNAL DE L'HISTORIQUE ---` : (currentLang === 'zh' ? `--- 每日交易流水历史账本 ---` : `--- ShoufKash POS Journal ---`));
+             let dateLabel = currentLang === 'ar' ? `التاريخ` : (currentLang === 'fr' ? `Date` : (currentLang === 'zh' ? `日期` : `Date`));
+             let revLabel = currentLang === 'ar' ? `إجمالي مدخولات اليوم` : (currentLang === 'fr' ? `Revenu d'Aujourd'hui` : (currentLang === 'zh' ? `今日总营业额` : `Revenue Today`));
+             let txLabel = currentLang === 'ar' ? `العمليات` : (currentLang === 'fr' ? `Transactions` : (currentLang === 'zh' ? `交易笔数` : `Transactions`));
+             let mruSuffix = currentLang === 'ar' ? `أوقية` : (currentLang === 'fr' ? `MRU` : (currentLang === 'zh' ? `乌吉亚` : `MRU`));
+
+             let reportText = `${reportHeader}\n📅 ${dateLabel}: ${dateStr}\n`; 
+             
+             rows.forEach(row => { 
+                 if(row.cells && row.cells.length >= 2) { 
+                     reportText += `🕒 ${row.cells[0].innerText.trim()} -> 💰 ${row.cells[1].innerText.trim()}\n`; 
+                 } 
+             }); 
+             
+             const totalRev = document.getElementById('revenueField').innerText; 
+             const totalCount = document.getElementById('countField').innerText; 
+             reportText += `----------------------------\n📊 ${revLabel}: ${totalRev}\n🔢 ${txLabel}: ${totalCount}`;
+
+             const textArea = document.createElement('textarea'); 
+             textArea.value = reportText; 
+             textArea.style.position = 'fixed'; 
+             textArea.style.opacity = '0'; 
+             document.body.appendChild(textArea); 
+             textArea.select(); 
+             document.execCommand('copy'); 
+             document.body.removeChild(textArea); 
+             alert('Journal logs copied to clipboard!');
+         };
      }
      
-     var clearBtn = document.getElementById('lbl-clearBtn');
-     if(clearBtn && typeof clearDailyHistory === "function") {
-         clearBtn.onclick = clearDailyHistory;
+     // HARDWIRED CLEAR LOGIC: Safely flushes counters and signals app.js storage memory
+     var cl = document.getElementById('lbl-clearBtn');
+     if(cl) {
+         cl.onclick = function() {
+             if(confirm('Are you sure you want to clear today\'s transaction history?')) { 
+                 document.getElementById('ledgerBody').innerHTML = '<tr><td colspan="2" align="center" style="color:#9ca3af; padding:15px; font-size:12px;">Journal empty</td></tr>'; 
+                 document.getElementById('revenueField').innerText = '0 MRU'; 
+                 document.getElementById('countField').innerText = '0'; 
+                 window.currentInput = ''; 
+                 localStorage.removeItem('saas_logs'); 
+                 window.dispatchEvent(new CustomEvent('clearPOSLocalStorage'));
+                 alert('Local transaction journal history cleared.'); 
+             }
+         };
      }
-
-     // Fail-safe global language element redirect framework bridges
-     var btnEn = document.getElementById('btn-en'); if(btnEn) btnEn.onclick = function() { window.changeLanguage('en'); };
-     var btnAr = document.getElementById('btn-ar'); if(btnAr) btnAr.onclick = function() { window.changeLanguage('ar'); };
-     var btnFr = document.getElementById('btn-fr'); if(btnFr) btnFr.onclick = function() { window.changeLanguage('fr'); };
-     var btnZh = document.getElementById('btn-zh'); if(btnZh) btnZh.onclick = function() { window.changeLanguage('zh'); };
   });
 </script>
 </body>
