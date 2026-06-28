@@ -189,8 +189,8 @@
 
                 <!-- Action Button Row for Management -->
                 <div class="journal-actions">
-                    <button class="btn-journal btn-copy" id="lbl-copyBtn" onclick="copyJournalToClipboard()">📋 Copy Journal</button>
-                    <button class="btn-journal btn-delete" id="lbl-clearBtn" onclick="clearDailyHistory()">🗑️ Clear History</button>
+                    <button class="btn-journal btn-copy" id="lbl-copyBtn" onclick="if(typeof copyJournalToClipboard === 'function') { copyJournalToClipboard(); } else { alert('Journal utility routing...'); }">📋 Copy Journal</button>
+                    <button class="btn-journal btn-delete" id="lbl-clearBtn" onclick="if(typeof clearDailyHistory === 'function') { clearDailyHistory(); } else { alert('History deletion pipeline...'); }">🗑️ Clear History</button>
                 </div>
             </div>
         </div>
@@ -273,13 +273,11 @@
   };
 
   // Clean Language Redirect Router
+  // Fixed Global Language Switcher Router
   window.changeLanguage = function(lang) {
-    // 1. Execute backup app.js localization text mapping layout engine modules
-    if (typeof changeLanguage === "function") {
-        changeLanguage(lang); 
-    }
-
-    // 2. Local fallback translation maps for onboarding elements
+    currentLang = lang;
+    
+    // 1. Update the onboarding visual screen fields locally
     let t = dictionary[lang];
     if(t) {
         document.getElementById('lbl-activationTitle').innerText = t.title;
@@ -289,10 +287,44 @@
         document.getElementById('lbl-phoneField').innerText = t.phoneField;
         
         let statusText = document.getElementById('verificationStatusText');
-        if(statusText.innerText.includes("Awaiting") || statusText.innerText.includes("في انتظار") || statusText.innerText.includes("En attente") || statusText.innerText.includes("正在等待")) {
+        if(statusText && (statusText.innerText.includes("Awaiting") || statusText.innerText.includes("في انتظار") || statusText.innerText.includes("En attente") || statusText.innerText.includes("正在等待"))) {
             statusText.innerText = t.awaiting;
         }
     }
+    
+    // 2. Safely call your background app.js interface variables without looping
+    let container = document.getElementById('mainContainer');
+    if (lang === 'ar') { container.classList.add('rtl'); } else { container.classList.remove('rtl'); }
+    
+    document.querySelectorAll('.lang-bar .lang-btn').forEach(btn => btn.classList.remove('active'));
+    const targetedBtn = document.getElementById('btn-' + lang);
+    if(targetedBtn) targetedBtn.classList.add('active');
+
+    // 3. Inject the active text properties straight down into app.js translations
+    if (typeof translations !== "undefined" && translations[lang]) {
+        let appText = translations[lang];
+        document.getElementById('titleBanner').innerText = appText.title;
+        if(document.getElementById('subBanner').innerText.indexOf("•") === -1) {
+            document.getElementById('subBanner').innerText = appText.sub;
+        }
+        document.getElementById('qrNotice').innerText = appText.qrNotice;
+        document.getElementById('lbl-confirmBtn').innerText = appText.confirmBtn;
+        document.getElementById('lbl-revToday').innerText = appText.revToday;
+        document.getElementById('lbl-txCount').innerText = appText.sales;
+        document.getElementById('lbl-thTime').innerText = appText.thTime;
+        document.getElementById('lbl-thAmount').innerText = appText.thAmount;
+        if (document.getElementById('lbl-copyBtn')) document.getElementById('lbl-copyBtn').innerText = appText.copyBtn;
+        if (document.getElementById('lbl-clearBtn')) document.getElementById('lbl-clearBtn').innerText = appText.clearBtn;
+        if (document.getElementById('btn-finalAccess')) document.getElementById('btn-finalAccess').innerText = "🔓 " + dictionary[lang].logBtn;
+        
+        // Refresh the calculator amount tracker window view size string
+        document.getElementById('priceDisplay').innerText = (window.currentInput || "0") + " " + appText.mru;
+    }
+    
+    if(typeof renderJournal === "function") {
+        renderJournal();
+    }
+    
     validatePhoneInput();
   };
 
@@ -366,7 +398,7 @@
             "Content-Type": "application/json"
         }
     })
-    .then(response => response.json())
+        .then(response => response.json())
     .then(data => {
         if (!data || data.length === 0) {
             statusText.innerText = dictionary[currentLang].errNotFound;
@@ -374,25 +406,68 @@
             return;
         }
 
-        // Safely extract the merchant record profile object item from the database array index
-        var merchant = data[0]; 
+        // STEP 1: DECLARED FIRST - Extract the raw row data object out of the array list envelope
+        var merchant = (data && data.length > 0) ? data[0] : null; 
 
-        // Security Parameter Check A: Strict administrative lockout parsing
-        if (merchant.status === 'blocked') {
-            statusText.innerText = dictionary[currentLang].errBlocked;
-            statusText.style.color = "#dc2626";
-            finalBtn.style.backgroundColor = '#9ca3af';
-            finalBtn.disabled = true;
-            return;
+        // STEP 2: CHECKED SECOND - Analyze the clean lowercase text inside your subscription_status column cell
+        if (merchant && merchant.subscription_status) {
+            var cleanStatus = merchant.subscription_status.toString().trim().toLowerCase();
+            
+            if (cleanStatus === 'blocked') {
+                statusText.innerText = dictionary[currentLang].errBlocked;
+                statusText.style.color = "#dc2626";
+                
+                finalBtn.style.backgroundColor = '#9ca3af';
+                finalBtn.style.cursor = 'not-allowed';
+                finalBtn.innerText = "❌ " + dictionary[currentLang].errBlocked;
+                finalBtn.disabled = true;
+                return;
+            }
         }
 
-        // Security Parameter Check B: Verify active date bounds dynamically
+        // STEP 3: PROCESSED THIRD - Run calendar calculations safely now that the object is fully loaded
         let expiryDate = new Date(merchant.expiry_date);
         let todayDate = new Date();
         
         if (expiryDate < todayDate) {
             statusText.innerText = dictionary[currentLang].errExpired;
             statusText.style.color = "#dc2626";
+        // FEATURE ADDITION: Play a harsh, unpleasant double-buzz error alarm tone natively
+       try {
+           var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+           
+           function playBuzz(delay) {
+               var osc = audioCtx.createOscillator();
+               var gain = audioCtx.createGain();
+               osc.connect(gain);
+               gain.connect(audioCtx.destination);
+               osc.type = 'sawtooth'; // Sawtooth wave makes a harsh, buzzer sound
+               osc.frequency.setValueAtTime(130.81, audioCtx.currentTime + delay); // Low frequency C3 buzz
+               gain.gain.setValueAtTime(0.2, audioCtx.currentTime + delay);
+               osc.start(audioCtx.currentTime + delay);
+               gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + delay + 0.25);
+               osc.stop(audioCtx.currentTime + delay + 0.25);
+           }
+           
+           playBuzz(0);      // First sharp buzz
+           playBuzz(0.35);   // Second sharp buzz
+       } catch(e) { console.log("Error alarm buzzer initialized."); }
+
+            // Play native high-pitched welcome audio confirmation tone
+try {
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var oscillator = audioCtx.createOscillator();
+    var gainNode = audioCtx.createGain();
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Crisp welcome chirp
+    gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    oscillator.start();
+    gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+    oscillator.stop(audioCtx.currentTime + 0.3);
+} catch(e) { console.log("Welcome chime initialized."); }
+
             finalBtn.style.backgroundColor = '#9ca3af';
             finalBtn.disabled = true;
             return;
@@ -417,6 +492,60 @@
     });
   };
   // Seamless layout window switcher module
+    // Secure Fallback Clipboard Engine for Laptop & Mobile WebViews
+  window.copyJournalToClipboard = function() {
+    const rows = document.querySelectorAll("#ledgerBody tr");
+    if(rows.length === 0 || (rows[0] && rows[0].innerText.includes("empty"))) {
+        alert("Journal is empty");
+        return;
+    }
+
+    const today = new Date();
+    const dateStr = today.getDate().toString().padStart(2, '0') + '/' + (today.getMonth() + 1).toString().padStart(2, '0') + '/' + today.getFullYear();
+    let reportText = `--- ShoufKash POS Journal ---\n📅 Date: ${dateStr}\n`;
+    rows.forEach(row => {
+        if(row.cells.length >= 2) {
+            const time = row.cells[0].innerText;
+            const amount = row.cells[1].innerText;
+            reportText += `🕒 ${time} -> 💰 ${amount}\n`;
+        }
+    });
+    
+    const totalRev = document.getElementById("revenueField").innerText;
+    const totalCount = document.getElementById("countField").innerText;
+    reportText += `----------------------------\n📊 Total Rev: ${totalRev}\n🔢 Total Tx: ${totalCount}`;
+
+    // Create an invisible, temporary input box to force clipboards to accept the text
+    const textArea = document.createElement("textarea");
+    textArea.value = reportText;
+    textArea.style.position = "fixed";
+    textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.select();
+    textArea.setSelectionRange(0, 99999); // Safe selector range configuration for mobile screens
+    
+    try {
+        document.execCommand('copy');
+        alert("Journal logs copied to clipboard!");
+    } catch (err) {
+        console.error('Android clipboard fallback failure: ', err);
+    }
+    document.body.removeChild(textArea);
+  };
+
+  // Safe History Eraser Interceptor
+  window.clearDailyHistory = function() {
+    if (confirm("Are you sure you want to clear today's transaction history?")) {
+        // Clear screen elements instantly
+        document.getElementById("ledgerBody").innerHTML = `<tr><td colspan="2" align="center" style="color:#9ca3af; padding:15px; font-size:12px;">Journal empty</td></tr>`;
+        document.getElementById("revenueField").innerText = "0 MRU";
+        document.getElementById("countField").innerText = "0";
+        
+        // Trigger your background app.js local storage cleanup event loop safely
+        window.dispatchEvent(new CustomEvent('clearPOSLocalStorage'));
+        alert("Local transaction journal history cleared.");
+    }
+  };
   window.checkDatabaseVerification = function() {
      document.getElementById('authScreen').style.display = 'none';
      document.getElementById('posWorkspace').style.display = 'flex';
@@ -434,12 +563,31 @@
   };
   
   // Secure single-point event lifecycle loader anchors
+    // Fully reactive single-point event event lifecycle loader
   document.addEventListener('DOMContentLoaded', function() {
+     // Hardwire secondary screen gateway switch click triggers safely
      var finalBtn = document.getElementById('btn-finalAccess');
      if(finalBtn) finalBtn.onclick = window.checkDatabaseVerification;
      
-     var btn = document.getElementById('exit-btn');
-     if(btn) btn.onclick = window.setupExitButton;
+     var exitBtn = document.getElementById('exit-btn');
+     if(exitBtn) exitBtn.onclick = window.setupExitButton;
+
+     // Hardwire management utility copy and clear loops directly back to app.js contexts
+     var copyBtn = document.getElementById('lbl-copyBtn');
+     if(copyBtn && typeof copyJournalToClipboard === "function") {
+         copyBtn.onclick = copyJournalToClipboard;
+     }
+     
+     var clearBtn = document.getElementById('lbl-clearBtn');
+     if(clearBtn && typeof clearDailyHistory === "function") {
+         clearBtn.onclick = clearDailyHistory;
+     }
+
+     // Fail-safe global language element redirect framework bridges
+     var btnEn = document.getElementById('btn-en'); if(btnEn) btnEn.onclick = function() { window.changeLanguage('en'); };
+     var btnAr = document.getElementById('btn-ar'); if(btnAr) btnAr.onclick = function() { window.changeLanguage('ar'); };
+     var btnFr = document.getElementById('btn-fr'); if(btnFr) btnFr.onclick = function() { window.changeLanguage('fr'); };
+     var btnZh = document.getElementById('btn-zh'); if(btnZh) btnZh.onclick = function() { window.changeLanguage('zh'); };
   });
 </script>
 </body>
