@@ -192,6 +192,10 @@
                     <button class="btn-journal btn-copy" id="lbl-copyBtn" onclick="if(typeof copyJournalToClipboard === 'function') { copyJournalToClipboard(); } else { alert('Journal utility routing...'); }">📋 Copy Journal</button>
                     <button class="btn-journal btn-delete" id="lbl-clearBtn" onclick="if(typeof clearDailyHistory === 'function') { clearDailyHistory(); } else { alert('History deletion pipeline...'); }">🗑️ Clear History</button>
                 </div>
+                <!-- Fully Responsive Localized Red Exit Row Module -->
+                <div style="margin-top: 8px; width: 100%;">
+                     <button id="lbl-exitTerminalBtn" type="button" style="border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background-color: #ef4444; color: #ffffff; border: 1px solid #dc2626; height: 38px; width: 100%;" onclick="if(typeof window.executeNativeMobileExit === 'function') { window.executeNativeMobileExit(); }">🛑 Exit Terminal / خروج</button>
+                </div>
             </div>
         </div>
     </div>
@@ -229,7 +233,8 @@
       errNotFound: "❌ Phone registration index record not found in system.",
       qrBtnLabel: "QR",
       copyBtn: "📋 Copy Journal",
-      clearBtn: "🗑️ Clear History"
+      clearBtn: "🗑️ Clear History",
+      exitBtnLabel: "🛑 Exit Terminal",
     },
     ar: {
       title: "شاشة تفعيل تطبيقك",
@@ -247,7 +252,8 @@
       errNotFound: "❌ لم يتم العثور على سجل رقم الهاتف في النظام.",
       qrBtnLabel: "رمز الدفع",
       copyBtn: "📋 نسخ السجل",
-      clearBtn: "🗑️ مسح السجل"
+      clearBtn: "🗑️ مسح السجل",
+      exitBtnLabel: "🛑 خروج من التطبيق",
     },
     fr: {
       title: "Votre Écran d'Activation de l'App",
@@ -265,7 +271,8 @@
       errNotFound: "❌ Enregistrement du numéro de téléphone introuvable.",
       qrBtnLabel: "QR",
       copyBtn: "📋 Copier le Journal",
-      clearBtn: "🗑️ Effacer l'Historique"
+      clearBtn: "🗑️ Effacer l'Historique",
+      exitBtnLabel: "🛑 Fermer l'Application",
     },
     zh: {
       title: "您的应用激活界面",
@@ -283,7 +290,8 @@
       errNotFound: "❌ 系统中未找到手机注册记录。",
       qrBtnLabel: "二维码",
       copyBtn: "📋 复制日志",
-      clearBtn: "🗑️ 清除历史"
+      clearBtn: "🗑️ 清除历史",
+      exitBtnLabel: "🛑 退出收银终端",
     },
   };
   // Fixed Global Language Switcher Router
@@ -334,6 +342,9 @@
     if (document.getElementById('lbl-qrBtn')) document.getElementById('lbl-qrBtn').innerText = dictionary[lang].qrBtnLabel;
     if (document.getElementById('lbl-copyBtn')) document.getElementById('lbl-copyBtn').innerText = dictionary[lang].copyBtn || "📋 Copy Journal";
     if (document.getElementById('lbl-clearBtn')) document.getElementById('lbl-clearBtn').innerText = dictionary[lang].clearBtn || "🗑️ Clear History";
+    if (document.getElementById('lbl-exitTerminalBtn')) {
+        document.getElementById('lbl-exitTerminalBtn').innerText = dictionary[lang].exitBtnLabel || "🛑 Exit Terminal";
+    }
 
     // SAFE WRAPPER: Added the missing "if" block check here
     if (document.getElementById('btn-finalAccess')) {
@@ -523,6 +534,22 @@
   
   // Secure single-point event lifecycle loader anchors
   // Fully reactive single-point event lifecycle loader anchors
+    // Native Global WebView Hardware Killer Link Bridge
+  window.executeNativeMobileExit = function() {
+      console.log("Global Capacitor process termination request fired.");
+      
+      // Target the direct un-bundled global Capacitor window object context safely
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+          window.Capacitor.Plugins.App.exitApp();
+          return;
+      } else if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
+          navigator.app.exitApp();
+          return;
+      } else {
+          window.open('', '_self', '').close();
+          alert("Terminal process terminated successfully! (Laptop local host fallback active).");
+      }
+  };
   document.addEventListener('DOMContentLoaded', function() {
      var finalBtn = document.getElementById('btn-finalAccess');
      if(finalBtn) finalBtn.onclick = window.checkDatabaseVerification;
