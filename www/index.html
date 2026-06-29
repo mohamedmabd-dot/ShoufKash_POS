@@ -194,7 +194,7 @@
                 </div>
                 <!-- Fully Responsive Localized Red Exit Row Module -->
                 <div style="margin-top: 8px; width: 100%;">
-                     <button id="lbl-exitTerminalBtn" type="button" style="border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background-color: #ef4444; color: #ffffff; border: 1px solid #dc2626; height: 38px; width: 100%;" onclick="if(typeof window.executeNativeMobileExit === 'function') { window.executeNativeMobileExit(); }">🛑 Exit Terminal / خروج</button>
+                     <button id="lbl-exitTerminalBtn" type="button" style="border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background-color: #ef4444; color: #ffffff; border: 1px solid #dc2626; height: 38px; width: 100%;" onclick="if(typeof window.executeNativeMobileExit === 'function') { window.executeNativeMobileExit(); }">🛑 Exit Terminal </button>
                 </div>
             </div>
         </div>
@@ -293,7 +293,7 @@
       clearBtn: "🗑️ 清除历史",
       exitBtnLabel: "🛑 退出收银终端",
     },
-  };
+};
   // Fixed Global Language Switcher Router
     // Fixed Global Language Switcher Router
   window.changeLanguage = function(lang) {
@@ -368,15 +368,12 @@
         if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
             window.Capacitor.Plugins.App.exitApp();
             return;
-        } else if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
-            navigator.app.exitApp();
-            return;
         } else {
-            window.open('', '_self', '').close();
-            alert("Application close request triggered successfully! (Laptop local emulator Active).");
-            return;
+        // Safe, crash-free fallback notification map layout for laptop testing emulation
+        alert("Terminal process closed successfully! (Laptop localhost testing simulation active).");
         }
     }
+    };
 
     // 2. If they are still on the initialization view, drop down the login inputs fields
     var initialMsg = document.getElementById('initialStateMessage');
@@ -385,7 +382,6 @@
         initialMsg.style.display = 'none';
         if (regWrapper) regWrapper.style.display = 'block';
     }
-  };
 
   window.handleNativeExit = function() {
      window.setupExitButton();
@@ -535,21 +531,21 @@
   // Secure single-point event lifecycle loader anchors
   // Fully reactive single-point event lifecycle loader anchors
     // Native Global WebView Hardware Killer Link Bridge
+  // Native Global WebView Hardware Killer Link Bridge
   window.executeNativeMobileExit = function() {
       console.log("Global Capacitor process termination request fired.");
       
       // Target the direct un-bundled global Capacitor window object context safely
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
           window.Capacitor.Plugins.App.exitApp();
-          return;
       } else if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
           navigator.app.exitApp();
-          return;
       } else {
-          window.open('', '_self', '').close();
-          alert("Terminal process terminated successfully! (Laptop local host fallback active).");
+          // Safe, crash-free fallback notification map layout for laptop testing emulation
+          alert("Terminal process closed successfully! (Laptop localhost testing simulation active).");
       }
   };
+
   document.addEventListener('DOMContentLoaded', function() {
      var finalBtn = document.getElementById('btn-finalAccess');
      if(finalBtn) finalBtn.onclick = window.checkDatabaseVerification;
@@ -617,7 +613,16 @@
              }
          };
      }
-  });
+     // HARDWIRED EXIT LOGIC: Connects your red rectangular button to the hardware killer bridge
+     var nativeExitBtn = document.getElementById('lbl-exitTerminalBtn');
+     if(nativeExitBtn) {
+         nativeExitBtn.onclick = function() {
+             if(typeof window.executeNativeMobileExit === 'function') {
+                 window.executeNativeMobileExit();
+             }
+         };
+     }
+  }); // Closes the DOMContentLoaded block completely and safely!
 </script>
 </body>
 </html>
