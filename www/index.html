@@ -348,23 +348,26 @@
     validatePhoneInput();
   };
   // Restored Instant Mobile Exit Sequence Engine
+  // Hardwired Instant Mobile Hardware Exit Sequence Engine
   window.setupExitButton = function() {
     console.log("Instant native exit sequence initialized.");
     
+    // 1. If the merchant is inside the workspace panel, terminate the app process instantly
     if (document.getElementById('posWorkspace').style.display === 'flex') {
-        if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
-          navigator.app.exitApp();
-          return;
-        } else if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-          window.Capacitor.Plugins.App.exitApp();
-          return;
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+            window.Capacitor.Plugins.App.exitApp();
+            return;
+        } else if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
+            navigator.app.exitApp();
+            return;
         } else {
-          window.open('', '_self', '').close();
-          alert("Application close request triggered successfully!");
-          return;
+            window.open('', '_self', '').close();
+            alert("Application close request triggered successfully! (Laptop local emulator Active).");
+            return;
         }
     }
 
+    // 2. If they are still on the initialization view, drop down the login inputs fields
     var initialMsg = document.getElementById('initialStateMessage');
     var regWrapper = document.getElementById('phoneRegistrationWrapper');
     if (initialMsg && initialMsg.style.display !== 'none') {
