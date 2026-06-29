@@ -5,30 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>ShoufKash Terminal</title>
     <style>
-        .exit-button {
-           position: fixed;
-           top: 18px;
-           right: 18px;
-           background: rgba(255, 255, 255, 0.15);
-           color: #ffffff;
-           border: 1.5px solid rgba(255, 255, 255, 0.6);
-           border-radius: 50%;
-           width: 36px;
-           height: 36px;
-           cursor: pointer;
-           z-index: 9999;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-           transition: all 0.2s ease;
-           padding: 0;
-           pointer-events: auto;
-        }
-        .exit-button:active { background: rgba(255, 255, 255, 0.3); transform: scale(0.95); }
-        .exit-button svg { width: 18px; height: 18px; }
-        .exit-button * { pointer-events: none !important; }
-
         body { background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
         .app-container { max-width: 420px; margin: 0 auto; background: #ffffff; min-height: 100vh; display: flex; flex-direction: column; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         header { background: linear-gradient(135deg, #1d4ed8, #2563eb); color: white; padding: 20px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; position: relative; z-index: 5; }
@@ -71,14 +47,6 @@
 </head>
 <body>
 
-<!-- High-End Engine Start/Stop Power Button Alternative -->
-<button id="exit-btn" class="exit-button" aria-label="Exit Application" onclick="setupExitButton()">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
-    <line x1="12" y1="2" x2="12" y2="12"></line>
-  </svg>
-</button>
-
 <div class="app-container" id="mainContainer">
     <header>
         <h1 id="titleBanner">ShoufKash POS</h1>
@@ -98,14 +66,10 @@
         <!-- Unified Secure App Activation Card -->
         <div class="card" id="authScreen">
             <h3 id="lbl-activationTitle" style="margin-top:0; color:#374151; font-weight:800;">Your App Activation Screen</h3>
-            
-            <!-- Dynamic Informational Onboarding Prompts -->
-            <div id="initialStateMessage" style="text-align: center; color: #6b7280; font-size: 14px; padding: 15px 0; font-weight: 500; line-height: 1.4;">
-              Press the Power Toggle Button in the top corner to initialize your terminal session registration.
-            </div>
+    
 
             <!-- Phone Entry Module Layout -->
-            <div id="phoneRegistrationWrapper" style="display: none;">
+            <div id="phoneRegistrationWrapper" style="display: block;">
                 <label id="lbl-phoneField" style="font-size:11px; color:#6b7280; font-weight:bold; letter-spacing:0.5px;">ENTER MERCHANT REGISTERED PHONE</label>
                 <input type="tel" id="phoneInput" placeholder="Ex: 44112233" style="width:100%; padding:14px; font-size:18px; box-sizing:border-box; margin-top:6px; margin-bottom:4px; border-radius:8px; border:2px solid #e5e7eb; font-weight:bold;" oninput="validatePhoneInput()">
                 <button id="lbl-activationBtn" onclick="processActivationStepOne()" class="btn-action" style="background-color: #9ca3af; cursor: not-allowed;" disabled>🔓 Activate Terminal Session</button>
@@ -187,14 +151,15 @@
                         <!-- Dynamic transaction rows injected here -->
                     </tbody>
                 </table>
-                <!-- Restored Slim Rectangular Bookkeeping Row -->
-                <div class="journal-actions">
-                    <button class="btn-journal btn-copy" id="lbl-copyBtn" onclick="if(typeof copyJournalToClipboard === 'function') { copyJournalToClipboard(); } else { alert('Journal utility routing...'); }">📋 Copy Journal</button>
-                    <button class="btn-journal btn-delete" id="lbl-clearBtn" onclick="if(typeof clearDailyHistory === 'function') { clearDailyHistory(); } else { alert('History deletion pipeline...'); }">🗑️ Clear History</button>
+                <!-- Restored Master Bookkeeping Control Row -->
+                <div class="journal-actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; border-top: 1px dashed #e5e7eb; padding-top: 12px;">
+                     <button class="btn-journal btn-copy" id="lbl-copyBtn" type="button" style="border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background-color: #f3f4f6; color: #1f2937; border: 1px solid #d1d5db; height: 38px; width: 100%;">📋 Copy Journal</button>
+                    <button class="btn-journal btn-delete" id="lbl-clearBtn" type="button" style="border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; height: 38px; width: 100%;">🗑️ Clear History</button>
                 </div>
+
                 <!-- Fully Responsive Localized Red Exit Row Module -->
                 <div style="margin-top: 8px; width: 100%;">
-                     <button id="lbl-exitTerminalBtn" type="button" style="border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background-color: #ef4444; color: #ffffff; border: 1px solid #dc2626; height: 38px; width: 100%;" onclick="if(typeof window.executeNativeMobileExit === 'function') { window.executeNativeMobileExit(); }">🛑 Exit Terminal </button>
+                    <button id="lbl-exitTerminalBtn" type="button" style="border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background-color: #ef4444; color: #ffffff; border: 1px solid #dc2626; height: 38px; width: 100%;" onclick="if(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) { window.Capacitor.Plugins.App.exitApp(); } else if(navigator.app && navigator.app.exitApp) { navigator.app.exitApp(); } else { alert('Terminal process closed successfully! (Laptop localhost testing simulation active).'); }">🛑 Exit Terminal </button>
                 </div>
             </div>
         </div>
@@ -219,7 +184,7 @@
   const dictionary = {
     en: {
       title: "Your App Activation Screen",
-      initMsg: "Press the Power Toggle Button in the top corner to initialize your terminal session registration.",
+      initMsg: "Please enter your 8-digit registered phone number below to activate your POS terminal session.",
       phoneField: "ENTER MERCHANT REGISTERED PHONE",
       actBtn: "🔓 Activate Terminal Session",
       bankLabel: "SYSTEM BANKILY ACCOUNT",
@@ -238,7 +203,7 @@
     },
     ar: {
       title: "شاشة تفعيل تطبيقك",
-      initMsg: "اضغط على زر التشغيل في الزاوية العلوية لبدء تسجيل جلسة المحطة الخاصة بك.",
+      initMsg: "يرجى إدخال رقم هاتفك المسجل المكون من 8 أرقام أدناه لتفعيل جلسة محطة الدفع الخاصة بك.",
       phoneField: "أدخل رقم الهاتف المسجل للتاجر",
       actBtn: "🔓 تفعيل جلسة العمل",
       bankLabel: "حساب بنكيلي الخاص بالنظام",
@@ -257,7 +222,7 @@
     },
     fr: {
       title: "Votre Écran d'Activation de l'App",
-      initMsg: "Appuyez sur le bouton d'alimentation dans le coin supérieur pour initialiser l'enregistrement de votre session.",
+      initMsg: "Veuillez saisir votre numéro de téléphone enregistré à 8 chiffres ci-dessous pour activer votre session de terminal POS.",
       phoneField: "ENTRER LE TÉLÉPHONE ENREGISTRÉ DU COMMERÇANT",
       actBtn: "🔓 Activer la Session du Terminal",
       bankLabel: "COMPTE SYSTEME BANKILY",
@@ -276,7 +241,7 @@
     },
     zh: {
       title: "您的应用激活界面",
-      initMsg: "请点击右上角的电源开关按钮以初始化您的终端会话注册。",
+      initMsg: "请在下方输入您注册的8位手机号码以激活您的POS收银终端会话。",
       phoneField: "输入商户注册手机号",
       actBtn: "🔓 激活终端会话",
       bankLabel: "系统 BANKILY 账户",
@@ -296,30 +261,32 @@
 };
   // Fixed Global Language Switcher Router
     // Fixed Global Language Switcher Router
+    // Master Bound Dynamic Language Synchronizer Router
   window.changeLanguage = function(lang) {
     currentLang = lang;
     
-    let t = dictionary[lang];
-    if(t) {
-        document.getElementById('lbl-activationTitle').innerText = t.title;
-        if(document.getElementById('initialStateMessage').style.display !== 'none') {
-            document.getElementById('initialStateMessage').innerText = t.initMsg;
-        }
-        document.getElementById('lbl-phoneField').innerText = t.phoneField;
+    // 1. Sync all SaaS onboarding and activation text fields
+    let onboardingText = dictionary[lang];
+    if(onboardingText) {
+        document.getElementById('lbl-activationTitle').innerText = onboardingText.title;
+        document.getElementById('lbl-phoneField').innerText = onboardingText.phoneField;
         
         let statusText = document.getElementById('verificationStatusText');
         if(statusText && (statusText.innerText.includes("Awaiting") || statusText.innerText.includes("في انتظار") || statusText.innerText.includes("En attente") || statusText.innerText.includes("正在等待"))) {
-            statusText.innerText = t.awaiting;
+            statusText.innerText = onboardingText.awaiting;
         }
     }
     
+    // 2. Adjust Right-To-Left container flow natively for Arabic layout direction
     let container = document.getElementById('mainContainer');
     if (lang === 'ar') { container.classList.add('rtl'); } else { container.classList.remove('rtl'); }
     
+    // 3. Highlight the active country flag selector button icon tab UI
     document.querySelectorAll('.lang-bar .lang-btn').forEach(btn => btn.classList.remove('active'));
     const targetedBtn = document.getElementById('btn-' + lang);
     if(targetedBtn) targetedBtn.classList.add('active');
 
+    // 4. Sync all core calculator keypads, ledger grids, and revenue tracker labels
     if (typeof translations !== "undefined" && translations[lang]) {
         let appText = translations[lang];
         document.getElementById('titleBanner').innerText = appText.title;
@@ -332,48 +299,24 @@
         document.getElementById('lbl-txCount').innerText = appText.sales;
         document.getElementById('lbl-thTime').innerText = appText.thTime;
         document.getElementById('lbl-thAmount').innerText = appText.thAmount;
-        <!-- Secure Isolated Bookkeeping Control Wrapper Container -->
         document.getElementById('priceDisplay').innerText = (window.currentInput || "0") + " " + appText.mru;
     }
-        // Inject onboarding custom subscription layout text labels dynamically
-    if (document.getElementById('lbl-activationBtn')) document.getElementById('lbl-activationBtn').innerText = dictionary[lang].actBtn;
-    if (document.getElementById('lbl-sysBank')) document.getElementById('lbl-sysBank').innerText = dictionary[lang].bankLabel;
-    if (document.getElementById('lbl-totalFees')) document.getElementById('lbl-totalFees').innerText = dictionary[lang].feesLabel;
-    if (document.getElementById('lbl-qrBtn')) document.getElementById('lbl-qrBtn').innerText = dictionary[lang].qrBtnLabel;
+
+    // 5. Force-sync all lower action option buttons instantly to avoid lagging definitions
     if (document.getElementById('lbl-copyBtn')) document.getElementById('lbl-copyBtn').innerText = dictionary[lang].copyBtn || "📋 Copy Journal";
     if (document.getElementById('lbl-clearBtn')) document.getElementById('lbl-clearBtn').innerText = dictionary[lang].clearBtn || "🗑️ Clear History";
-    if (document.getElementById('lbl-exitTerminalBtn')) {
-        document.getElementById('lbl-exitTerminalBtn').innerText = dictionary[lang].exitBtnLabel || "🛑 Exit Terminal";
-    }
-
-    // SAFE WRAPPER: Added the missing "if" block check here
-    if (document.getElementById('btn-finalAccess')) {
+    if (document.getElementById('lbl-qrBtn')) document.getElementById('lbl-qrBtn').innerText = dictionary[lang].qrBtnLabel || "QR";
+    if (document.getElementById('lbl-activationBtn')) document.getElementById('lbl-activationBtn').innerText = dictionary[lang].actBtn || "🔓 Activate Terminal Session";
+    if (document.getElementById('lbl-exitTerminalBtn')) document.getElementById('lbl-exitTerminalBtn').innerText = dictionary[lang].exitBtnLabel || "🛑 Exit Terminal";
+    
+    if (document.getElementById('btn-finalAccess') && !document.getElementById('btn-finalAccess').disabled) {
         document.getElementById('btn-finalAccess').innerText = "🔓 " + dictionary[lang].logBtn;
     }
 
-   // Bypasses the naming collision to run app.js safely
-    if (window.translations && typeof window.translations[lang] !== "undefined") {
+    // 6. Push translation properties down safely to your app.js runtime loop scope
     if (typeof window.renderJournal === "function") { window.renderJournal(); }
-    }
-    if (typeof renderJournal === "function") { renderJournal(); }
     validatePhoneInput();
   };
-  // Restored Instant Mobile Exit Sequence Engine
-  // Hardwired Instant Mobile Hardware Exit Sequence Engine
-  window.setupExitButton = function() {
-    console.log("Instant native exit sequence initialized.");
-    
-    // 1. If the merchant is inside the workspace panel, terminate the app process instantly
-    if (document.getElementById('posWorkspace').style.display === 'flex') {
-        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-            window.Capacitor.Plugins.App.exitApp();
-            return;
-        } else {
-        // Safe, crash-free fallback notification map layout for laptop testing emulation
-        alert("Terminal process closed successfully! (Laptop localhost testing simulation active).");
-        }
-    }
-    };
 
     // 2. If they are still on the initialization view, drop down the login inputs fields
     var initialMsg = document.getElementById('initialStateMessage');
@@ -532,47 +475,60 @@
   // Fully reactive single-point event lifecycle loader anchors
     // Native Global WebView Hardware Killer Link Bridge
   // Native Global WebView Hardware Killer Link Bridge
+    // Native Global WebView Hardware Killer Link Bridge - ASYNC FIRING REPAIR
+    // Hardwired Native Java Bridge Mobile Hardware Killer
   window.executeNativeMobileExit = function() {
-      console.log("Global Capacitor process termination request fired.");
+      console.log("Direct native window thread termination fired.");
       
-      // Target the direct un-bundled global Capacitor window object context safely
-      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-          window.Capacitor.Plugins.App.exitApp();
-      } else if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
-          navigator.app.exitApp();
-      } else {
-          // Safe, crash-free fallback notification map layout for laptop testing emulation
-          alert("Terminal process closed successfully! (Laptop localhost testing simulation active).");
+      try {
+          // 1. Target the absolute, global un-bundled Capacitor engine layer
+          if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+              window.Capacitor.Plugins.App.exitApp();
+              return;
+          } 
+          
+          // 2. Call the primary underlying hardware device browser navigator stack
+          if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
+              navigator.app.exitApp();
+              return;
+          }
+          
+          // 3. Native Android platform window context killer injection hook
+          if (window.Android && typeof window.Android.closeApp === 'function') {
+              window.Android.closeApp();
+              return;
+          }
+          
+          // Fallback laptop simulation alert notification tracker
+          alert("Terminal process closed! (Laptop localhost fallback simulation active).");
+      } catch (err) {
+          console.error("Mobile lifecycle interface bridge lag:", err);
       }
   };
 
+  // Secure single-point event lifecycle loader anchors
   document.addEventListener('DOMContentLoaded', function() {
+     // Hardwired secondary screen gateway switch click triggers safely
      var finalBtn = document.getElementById('btn-finalAccess');
      if(finalBtn) finalBtn.onclick = window.checkDatabaseVerification;
-     
-     var btn = document.getElementById('exit-btn');
-     if(btn) btn.onclick = window.setupExitButton;
 
      // HARDWIRED COPY LOGIC: Safely pulls data arrays from cell indexes cleanly
      var cp = document.getElementById('lbl-copyBtn');
      if(cp) {
          cp.onclick = function() {
              const rows = document.querySelectorAll('#ledgerBody tr');
-             // Fast look-ahead guard to confirm rows are populated
              if(rows.length === 0 || (rows[0] && rows[0].innerText.includes('empty'))) { 
                  alert('Journal is empty'); 
                  return;
              }
              
-            const today = new Date(); 
+             const today = new Date(); 
              const dateStr = today.getDate().toString().padStart(2, '0') + '/' + (today.getMonth() + 1).toString().padStart(2, '0') + '/' + today.getFullYear(); 
              
-             // Dynamic Multilingual Clipboard Report Matrix Header Maps
              let reportHeader = currentLang === 'ar' ? `--- سجل العمليات اليومية ---` : (currentLang === 'fr' ? `--- JOURNAL DE L'HISTORIQUE ---` : (currentLang === 'zh' ? `--- 每日交易流水历史账本 ---` : `--- ShoufKash POS Journal ---`));
              let dateLabel = currentLang === 'ar' ? `التاريخ` : (currentLang === 'fr' ? `Date` : (currentLang === 'zh' ? `日期` : `Date`));
              let revLabel = currentLang === 'ar' ? `إجمالي مدخولات اليوم` : (currentLang === 'fr' ? `Revenu d'Aujourd'hui` : (currentLang === 'zh' ? `今日总营业额` : `Revenue Today`));
              let txLabel = currentLang === 'ar' ? `العمليات` : (currentLang === 'fr' ? `Transactions` : (currentLang === 'zh' ? `交易笔数` : `Transactions`));
-             let mruSuffix = currentLang === 'ar' ? `أوقية` : (currentLang === 'fr' ? `MRU` : (currentLang === 'zh' ? `乌吉亚` : `MRU`));
 
              let reportText = `${reportHeader}\n📅 ${dateLabel}: ${dateStr}\n`; 
              
@@ -613,16 +569,22 @@
              }
          };
      }
-     // HARDWIRED EXIT LOGIC: Connects your red rectangular button to the hardware killer bridge
+
+     // HARDWIRED EXIT LOGIC: Connects your red rectangular button directly to the phone processor
      var nativeExitBtn = document.getElementById('lbl-exitTerminalBtn');
      if(nativeExitBtn) {
          nativeExitBtn.onclick = function() {
-             if(typeof window.executeNativeMobileExit === 'function') {
-                 window.executeNativeMobileExit();
+             console.log("Direct inline hardware exit triggered.");
+             if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+                 window.Capacitor.Plugins.App.exitApp();
+             } else if (navigator && navigator.app && navigator.app.exitApp) {
+                 navigator.app.exitApp();
+             } else {
+                 alert('Terminal process closed successfully! (Laptop localhost testing simulation active).');
              }
          };
      }
-  }); // Closes the DOMContentLoaded block completely and safely!
+  });
 </script>
 </body>
 </html>
