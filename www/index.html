@@ -159,7 +159,9 @@
 
                 <!-- Fully Responsive Localized Red Exit Row Module -->
                 <div style="margin-top: 8px; width: 100%;">
-                    <button id="lbl-exitTerminalBtn" type="button" style="border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background-color: #ef4444; color: #ffffff; border: 1px solid #dc2626; height: 38px; width: 100%;" onclick="if(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) { window.Capacitor.Plugins.App.exitApp(); } else if(navigator.app && navigator.app.exitApp) { navigator.app.exitApp(); } else { alert('Terminal process closed successfully! (Laptop localhost testing simulation active).'); }">🛑 Exit Terminal </button>
+                    <a href="intent:#Intent;action=android.intent.action.MAIN;category=android.category.HOME;end" style="text-decoration: none; width: 100%; display: block;">
+                    <button id="lbl-exitTerminalBtn" type="button" style="border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background-color: #ef4444; color: #ffffff; border: 1px solid #dc2626; height: 38px; width: 100%;">🛑 Exit Terminal</button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -470,41 +472,6 @@
          alert(localizedAlertText);
      }, 1500);
   };
-  
-  // Secure single-point event lifecycle loader anchors
-  // Fully reactive single-point event lifecycle loader anchors
-    // Native Global WebView Hardware Killer Link Bridge
-  // Native Global WebView Hardware Killer Link Bridge
-    // Native Global WebView Hardware Killer Link Bridge - ASYNC FIRING REPAIR
-    // Hardwired Native Java Bridge Mobile Hardware Killer
-  window.executeNativeMobileExit = function() {
-      console.log("Direct native window thread termination fired.");
-      
-      try {
-          // 1. Target the absolute, global un-bundled Capacitor engine layer
-          if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-              window.Capacitor.Plugins.App.exitApp();
-              return;
-          } 
-          
-          // 2. Call the primary underlying hardware device browser navigator stack
-          if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
-              navigator.app.exitApp();
-              return;
-          }
-          
-          // 3. Native Android platform window context killer injection hook
-          if (window.Android && typeof window.Android.closeApp === 'function') {
-              window.Android.closeApp();
-              return;
-          }
-          
-          // Fallback laptop simulation alert notification tracker
-          alert("Terminal process closed! (Laptop localhost fallback simulation active).");
-      } catch (err) {
-          console.error("Mobile lifecycle interface bridge lag:", err);
-      }
-  };
 
   // Secure single-point event lifecycle loader anchors
   document.addEventListener('DOMContentLoaded', function() {
@@ -574,14 +541,28 @@
      var nativeExitBtn = document.getElementById('lbl-exitTerminalBtn');
      if(nativeExitBtn) {
          nativeExitBtn.onclick = function() {
-             console.log("Direct inline hardware exit triggered.");
+             console.log("Direct webview hardware intercept activated.");
+             
+             // 1. Direct core call to fallback Android activity lifecycle container
+             if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
+                 navigator.app.exitApp();
+                 return;
+             }
+             
+             // 2. Direct core call to un-bundled global Capacitor engine frame layout
              if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
                  window.Capacitor.Plugins.App.exitApp();
-             } else if (navigator && navigator.app && navigator.app.exitApp) {
-                 navigator.app.exitApp();
-             } else {
-                 alert('Terminal process closed successfully! (Laptop localhost testing simulation active).');
+                 return;
              }
+             
+             // 3. Absolute native WebKit background activity killer injection hook
+             if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.exitApp) {
+                 window.webkit.messageHandlers.exitApp.postMessage('');
+                 return;
+             }
+             
+             // Localhost browser testing environment simulation alert layout notification
+             alert("Terminal process closed successfully! (Laptop localhost testing simulation active).");
          };
      }
   });
