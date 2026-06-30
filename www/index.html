@@ -157,11 +157,11 @@
                     <button class="btn-journal btn-delete" id="lbl-clearBtn" type="button" style="border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; height: 38px; width: 100%;">🗑️ Clear History</button>
                 </div>
 
-                <!-- Fully Responsive Localized Red Exit Row Module -->
-                <div style="margin-top: 8px; width: 100%;">
-                    <a href="intent:#Intent;action=android.intent.action.MAIN;category=android.category.HOME;end" style="text-decoration: none; width: 100%; display: block;">
-                    <button id="lbl-exitTerminalBtn" type="button" style="border: none; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; background-color: #ef4444; color: #ffffff; border: 1px solid #dc2626; height: 38px; width: 100%;">🛑 Exit Terminal</button>
-                    </a>
+                <!-- Interactive Premium Multi-Language Branding & Feedback Footer -->
+                <div style="margin-top: 12px; width: 100%;">
+                     <a href="https://yourfeedbackwebsite.com" target="_blank" id="lnk-brandFooter" style="text-decoration: none; display: block; width: 100%;">
+                <div id="lbl-brandFooterText" style="background-color: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; padding: 10px; border-radius: 8px; font-size: 11px; font-weight: 600; text-align: center; cursor: pointer; transition: all 0.2s ease; line-height: 1.4;">
+                    ✨ Powered by C3S.sarl — Tap here to rate or give feedback!
                 </div>
             </div>
         </div>
@@ -201,7 +201,7 @@
       qrBtnLabel: "QR",
       copyBtn: "📋 Copy Journal",
       clearBtn: "🗑️ Clear History",
-      exitBtnLabel: "🛑 Exit Terminal",
+      footerText: "✨ Powered by C3S.sarl — Tap here to rate or give feedback!",
     },
     ar: {
       title: "شاشة تفعيل تطبيقك",
@@ -220,7 +220,7 @@
       qrBtnLabel: "رمز الدفع",
       copyBtn: "📋 نسخ السجل",
       clearBtn: "🗑️ مسح السجل",
-      exitBtnLabel: "🛑 خروج من التطبيق",
+      footerText: "✨ بدعم من C3S.sarl — اضغط هنا لتقييمنا وإرسال ملاحظاتك!",
     },
     fr: {
       title: "Votre Écran d'Activation de l'App",
@@ -239,7 +239,7 @@
       qrBtnLabel: "QR",
       copyBtn: "📋 Copier le Journal",
       clearBtn: "🗑️ Effacer l'Historique",
-      exitBtnLabel: "🛑 Fermer l'Application",
+      footerText: "✨ Propulsé par C3S.sarl — Cliquez ici pour évaluer ou donner votre avis !",
     },
     zh: {
       title: "您的应用激活界面",
@@ -258,7 +258,7 @@
       qrBtnLabel: "二维码",
       copyBtn: "📋 复制日志",
       clearBtn: "🗑️ 清除历史",
-      exitBtnLabel: "🛑 退出收银终端",
+      footerText: "✨ 由 C3S.sarl 提供技术支持 — 点击此处进行评价或反馈！",
     },
 };
   // Fixed Global Language Switcher Router
@@ -309,7 +309,9 @@
     if (document.getElementById('lbl-clearBtn')) document.getElementById('lbl-clearBtn').innerText = dictionary[lang].clearBtn || "🗑️ Clear History";
     if (document.getElementById('lbl-qrBtn')) document.getElementById('lbl-qrBtn').innerText = dictionary[lang].qrBtnLabel || "QR";
     if (document.getElementById('lbl-activationBtn')) document.getElementById('lbl-activationBtn').innerText = dictionary[lang].actBtn || "🔓 Activate Terminal Session";
-    if (document.getElementById('lbl-exitTerminalBtn')) document.getElementById('lbl-exitTerminalBtn').innerText = dictionary[lang].exitBtnLabel || "🛑 Exit Terminal";
+    if (document.getElementById('lbl-brandFooterText')) {
+        document.getElementById('lbl-brandFooterText').innerText = dictionary[lang].footerText || "✨ Powered by C3S.sarl";
+    }
     
     if (document.getElementById('btn-finalAccess') && !document.getElementById('btn-finalAccess').disabled) {
         document.getElementById('btn-finalAccess').innerText = "🔓 " + dictionary[lang].logBtn;
@@ -473,18 +475,18 @@
      }, 1500);
   };
 
-  // Secure single-point event lifecycle loader anchors
+    // Secure single-point event lifecycle loader anchors
   document.addEventListener('DOMContentLoaded', function() {
      // Hardwired secondary screen gateway switch click triggers safely
      var finalBtn = document.getElementById('btn-finalAccess');
      if(finalBtn) finalBtn.onclick = window.checkDatabaseVerification;
 
-     // HARDWIRED COPY LOGIC: Safely pulls data arrays from cell indexes cleanly
+     // HARDWIRED COPY LOGIC: Safely pulls data arrays from cell indexes cleanly on button press
      var cp = document.getElementById('lbl-copyBtn');
      if(cp) {
          cp.onclick = function() {
              const rows = document.querySelectorAll('#ledgerBody tr');
-             if(rows.length === 0 || (rows[0] && rows[0].innerText.includes('empty'))) { 
+             if(rows.length === 0 || (rows && rows.innerText && rows.innerText.includes('empty'))) { 
                  alert('Journal is empty'); 
                  return;
              }
@@ -521,7 +523,7 @@
          };
      }
      
-     // HARDWIRED CLEAR LOGIC: Safely flushes counters and signals app.js storage memory
+     // HARDWIRED CLEAR LOGIC: Safely flushes counters and signals app.js storage memory on button press
      var cl = document.getElementById('lbl-clearBtn');
      if(cl) {
          cl.onclick = function() {
@@ -536,36 +538,7 @@
              }
          };
      }
-
-     // HARDWIRED EXIT LOGIC: Connects your red rectangular button directly to the phone processor
-     var nativeExitBtn = document.getElementById('lbl-exitTerminalBtn');
-     if(nativeExitBtn) {
-         nativeExitBtn.onclick = function() {
-             console.log("Direct webview hardware intercept activated.");
-             
-             // 1. Direct core call to fallback Android activity lifecycle container
-             if (typeof navigator !== 'undefined' && navigator.app && navigator.app.exitApp) {
-                 navigator.app.exitApp();
-                 return;
-             }
-             
-             // 2. Direct core call to un-bundled global Capacitor engine frame layout
-             if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-                 window.Capacitor.Plugins.App.exitApp();
-                 return;
-             }
-             
-             // 3. Absolute native WebKit background activity killer injection hook
-             if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.exitApp) {
-                 window.webkit.messageHandlers.exitApp.postMessage('');
-                 return;
-             }
-             
-             // Localhost browser testing environment simulation alert layout notification
-             alert("Terminal process closed successfully! (Laptop localhost testing simulation active).");
-         };
-     }
-  });
+  }); // Perfectly closes the event loader loop container safely!
 </script>
 </body>
 </html>
